@@ -16,15 +16,16 @@ import {
   import React, { useEffect, useState } from "react";
   import AsyncStorage from "@react-native-async-storage/async-storage";
   import 'react-native-gesture-handler';
+import { ObjectId } from "@/utils";
   const { height, width } = Dimensions.get("window");
   const Calculator = () => {
     const [display, setDisplay] = useState("");
     const [rate, setRate] = useState("");
-    const [details, setDetails] = useState<{ [key: number]: string }>({});
-    const [editingDetailId, setEditingDetailId] = useState<number | null>(null);
+    const [details, setDetails] = useState<{ [key: string]: string }>({});
+    const [editingDetailId, setEditingDetailId] = useState<string | null>(null);
     const [editingField, setEditingField] = useState<"quantity" | "rate" | "detail">("quantity");
     const [totalList, setTotalList] = useState<Array<{
-      id: number;
+      id: string;
       quantity: string;
       rate: string;
       price: string;
@@ -107,12 +108,13 @@ import {
       const price = (quantity * rateValue).toFixed(2);
   
       if (quantity > 0 && rateValue > 0) {
+        const id :any = ObjectId()
         const newEntry = {
-          id: Date.now(),
+          id: id,
           quantity: display,
           rate: rate,
           price: price,
-          detail: details[Date.now()] || "" // Initialize detail
+          detail: details[id] || "" 
         };
   
         setTotalList(prev => [newEntry, ...prev]);
@@ -120,7 +122,7 @@ import {
         setRate("");
       }
     };
-    const handleDetailChange = (id: number, text: string) => {
+    const handleDetailChange = (id: string, text: string) => {
       setDetails(prev => ({
         ...prev,
         [id]: text

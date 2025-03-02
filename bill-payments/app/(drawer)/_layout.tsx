@@ -1,10 +1,11 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Drawer } from "expo-router/drawer";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 const DrawerLayout = () => {
   return (
-    <Drawer>
+    <Drawer initialRouteName="index">
       <Drawer.Screen
         name="index"
         options={{
@@ -38,6 +39,59 @@ const DrawerLayout = () => {
           ),
         }}
       />
+        <Drawer.Screen
+        name={"category/index"}
+        options={{
+          headerShown: true,
+          title: "Category",
+          headerTintColor: "rgb(189, 189, 189)",
+          headerStyle: {
+            backgroundColor: "rgb(75,75,75)",
+          },
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 20,
+            fontWeight: "bold",
+            color: "rgb(255, 255, 255)",
+          },
+          drawerStyle: {
+            backgroundColor: "rgb(75,75,75)",
+          },
+          drawerLabelStyle: {
+            color: "rgb(255, 255, 255)",
+          },
+          drawerActiveBackgroundColor: "rgb(122, 122, 122)",
+          drawerIcon: ({ focused, color, size }) => (
+            <Text style={{ color: color, fontSize: size }}>📁</Text>
+          ),
+        }}
+      />
+      <Drawer.Screen  name="cashManagement/index" options={
+        {
+          headerShown: true,
+          title: "Cash Management",
+          headerTintColor: "rgb(189, 189, 189)",
+          headerStyle: {
+            backgroundColor: "rgb(75,75,75)",
+          },
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 20,
+            fontWeight: "bold",
+            color: "rgb(255, 255, 255)",
+          },
+          drawerStyle: {
+            backgroundColor: "rgb(75,75,75)",
+          },
+          drawerLabelStyle: {
+            color: "rgb(255, 255, 255)",
+          },
+          drawerActiveBackgroundColor: "rgb(122, 122, 122)",
+          drawerIcon: ({ focused, color, size }) => (
+            <FontAwesome5 name="money-bill-wave" size={20} color={'green'}/>
+          ),
+        }
+      } />
       <Drawer.Screen
         name="about/index"
         options={{
@@ -66,10 +120,10 @@ const DrawerLayout = () => {
         }}
       />
       <Drawer.Screen
-        name="category/index"
+        name="contactus/index"
         options={{
           headerShown: true,
-          title: "Category",
+          title: "Contact us",
           headerTintColor: "rgb(189, 189, 189)",
           headerStyle: {
             backgroundColor: "rgb(75,75,75)",
@@ -88,10 +142,11 @@ const DrawerLayout = () => {
           },
           drawerActiveBackgroundColor: "rgb(122, 122, 122)",
           drawerIcon: ({ focused, color, size }) => (
-            <Text style={{ color: color, fontSize: size }}>📁</Text>
+            <FontAwesome5 name="phone-alt" size={20} color={'red'}/>
           ),
         }}
       />
+    
     </Drawer>
   );
 };

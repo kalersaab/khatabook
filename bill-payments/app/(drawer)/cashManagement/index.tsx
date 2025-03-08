@@ -1,28 +1,69 @@
 import FloatingActionButton from '@/components/float';
 import { useGetCash } from '@/hooks/query';
 import React from 'react';
-import { View, Image, Text, Dimensions, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Image, Text, Dimensions, StyleSheet, TouchableOpacity, ToastAndroid, Modal, TextInput } from 'react-native';
 import { FlatList } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import moment from 'moment'
-import { useDeleteCash } from '@/hooks/mutation';
-
+import { useCreateCash, useDeleteCash } from '@/hooks/mutation';
+import { radiobutton } from '@/extra';
+import RadioGroup from 'react-native-radio-buttons-group';
+import { queryClient } from '@/app/_layout';
 const { width } = Dimensions.get('window');
 
 const Cash = () => {
   const [type, setType] = React.useState('debit');
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState("");
+  const [notes, setNotes] = React.useState("");
   const cashapi:any = useGetCash();
-
+const createCash = useCreateCash();
+const saveCash = () => {
+  if (!inputValue || !notes) {
+    ToastAndroid.show('Please fill all the fields', ToastAndroid.SHORT);
+    return;
+  }
+  createCash.mutateAsync({
+    amount: inputValue,
+    notes,
+    type
+  }).then((res) => {
+    ToastAndroid.show('Added successfully', ToastAndroid.SHORT);
+    queryClient.refetchQueries({ queryKey: ["Cash"] });
+    setModalVisible(false);
+    setInputValue('');
+    setNotes('');
+  }).catch((err) => {
+    ToastAndroid.show('Error adding cash', ToastAndroid.SHORT);
+  })
+}
     const cash = cashapi?.data?.data?.data?.map((item:any)=>item) ?? []
 const deleteCash = useDeleteCash();
 const handleDelete = (id:any) => {
-  console.log('id', id)
-  deleteCash.mutate(id, {
-    onSuccess: () => {
-      ToastAndroid.show('Deleted successfully', ToastAndroid.SHORT);
-    },
-  });
+ deleteCash.mutateAsync({pathParams:{
+  id:id
+ }}).then((res:any) => { 
+  if(res?.status === 200){
+  ToastAndroid.show('Deleted successfully', ToastAndroid.SHORT);
+  queryClient.refetchQueries({ queryKey: ["Cash"] });
+}else{
+  ToastAndroid.show('Not found', ToastAndroid.SHORT)
+  queryClient.refetchQueries({ queryKey: ["Cash"] });
+
 }
+ }).catch((err) => {
+  ToastAndroid.show('Error deleting cash', ToastAndroid.SHORT);
+  queryClient.refetchQueries({ queryKey: ["Cash"] });
+
+ })
+}
+const closeModal = () => {
+  setModalVisible(false);
+};
+const openModalForAdd = () => {
+  setInputValue("");
+  setModalVisible(true);
+};
   const renderLeftActions = () => {
     return (
       <TouchableOpacity 
@@ -74,6 +115,10 @@ const handleDelete = (id:any) => {
       </View>
     );
   }
+  const handleModel = (type:string) => {
+    setType(type);
+    openModalForAdd();
+  }
   return (
     <View style={styles.container}>
       <FlatList 
@@ -83,15 +128,59 @@ const handleDelete = (id:any) => {
         ListEmptyComponent={EmptyList}
         ItemSeparatorComponent={()=><Separator />}
       />
-      <FloatingActionButton onLongPress={()=>ToastAndroid.show('Add Button', ToastAndroid.SHORT)}/>
+      <FloatingActionButton onLongPress={()=>ToastAndroid.show('Add Button', ToastAndroid.SHORT)} onPress={openModalForAdd}/>
         <View style={{flexDirection:'row', width:width, padding:10, margin:10}}>
-          <TouchableOpacity style={styles.btn} onPress={() => setType('debit')}>
+          <TouchableOpacity style={styles.btn} onPress={() => handleModel('debit')}>
             <Text style={{color: type === 'debit' ? 'white' : 'rgb(221, 221, 221)', textAlign:'center', fontSize:20}}>Debit</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.btn,{backgroundColor:'green'}]} onPress={() => setType('credit')}>
+          <TouchableOpacity style={[styles.btn,{backgroundColor:'green'}]} onPress={() => handleModel('credit')}>
             <Text style={{color: type === 'credit' ? 'white' : 'rgb(221, 221, 221)', textAlign:'center', fontSize:20}}>Credit</Text>
           </TouchableOpacity>
         </View>
+          <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={closeModal}
+              >
+                <View style={styles.modalBackground}>
+                  <View style={styles.modalContainer}>
+                    <Text style={styles.modalTitle}>Cash</Text>
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Amount"
+                      keyboardType='number-pad'
+                      placeholderTextColor="#ccc"
+                      value={inputValue}
+                      onChangeText={setInputValue}
+                      autoFocus
+                    />
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Notes"
+                      placeholderTextColor="#ccc"
+                      value={notes}
+                      onChangeText={setNotes}
+                    />
+                    <RadioGroup
+                      radioButtons={radiobutton}
+                      onPress={setType}
+                      selectedId={type}
+                      labelStyle={{color: '#fff', fontSize: 20}}
+                      layout='row'
+                      containerStyle={{margin:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}
+                    />
+                    <View style={styles.buttonRow}>
+                      <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={() =>saveCash()}>
+                        <Text style={styles.buttonText}>Save</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={closeModal}>
+                        <Text style={styles.buttonText}>Cancel</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
     </View>
   );
 };
@@ -140,6 +229,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: width * 0.20
   },
+
   rightAction: {
     backgroundColor: 'red',
     justifyContent: 'center',
@@ -173,5 +263,51 @@ const styles = StyleSheet.create({
     width: width* 0.9, 
     height: 350,
     resizeMode: 'contain',
+  },
+  modalTitle: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  textInput: {
+    backgroundColor: "#444",
+    color: "#fff",
+    padding: 20,
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  button: {
+    flex: 0.48,
+    paddingVertical: 20,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  saveButton: {
+    backgroundColor: "#2ecc71",
+  },
+  cancelButton: {
+    backgroundColor: "#e74c3c",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: width * 0.8,
+    padding: 30,
+    backgroundColor: "#333",
+    borderRadius: 10,
   },
 });

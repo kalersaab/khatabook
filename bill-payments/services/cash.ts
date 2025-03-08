@@ -5,9 +5,11 @@ export const GetCash = () =>
     callApi({
       uriEndPoint: { ...Cash.getCash.v1 },
     });
-export const DeleteCash = ({pathParams}:any) =>
-    callApi({
+export const DeleteCash = ({pathParams}:any) =>{
+  console.log('pathParams', pathParams)
+    return callApi({
       uriEndPoint: { ...Cash.deletecash.v1 },
-      pathParams
+     pathParams
     });
-  
+  };
+export const CreateCash = (data:any) => callApi({ uriEndPoint: { ...Cash.createCash.v1 }, body: data });

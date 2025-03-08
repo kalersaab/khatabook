@@ -1,12 +1,16 @@
 import { queryClient } from "@/app/_layout";
-import { DeleteCash } from "@/services/cash";
+import { CreateCash, DeleteCash } from "@/services/cash";
 import { useMutation } from "react-query";
 
 export const useDeleteCash = () => {
-    return useMutation((id) => DeleteCash(id).then(async(res) => {
-        console.log('res', res)
-        debugger
+    return useMutation((payload:any) => DeleteCash(payload))
+};
+export const useCreateCash = () => {
+    return useMutation((payload:any) => {
+        return CreateCash(payload).then(async(res) => {
         await queryClient.refetchQueries({ queryKey: ["Cash"] });
         return res
-    }));
+    }).catch((err) => {
+        console.log(err)
+    })});
 };

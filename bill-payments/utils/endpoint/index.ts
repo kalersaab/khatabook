@@ -1,6 +1,13 @@
 import { defaults } from "./defaults";
 
 export const Cash = {
+  createCash:{
+    v1:{
+      ...defaults.methods.POST,
+      ...defaults.versions.v2,
+      uri: '/api/cashManagement/createcash',
+    }
+  },
   getCash: {
     v1: {
       ...defaults.methods.GET,

@@ -7,7 +7,7 @@ import {
   Dimensions,
   ToastAndroid,
   Modal,
-  TextInput,
+  TextInput,Image,
   FlatList,
 } from "react-native";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
@@ -122,10 +122,9 @@ const  CategoryItem = () => {
           contentContainerStyle={{ paddingVertical: 10 }}
         />
       ) : (
-        <View style={[styles.container, { justifyContent: "center", alignItems: "center", flex: 1 }]}>
-          <Text style={{ color: "rgb(255,255,255)", fontSize: 30, textAlign: "center" }}>
-            No Data Found
-          </Text>
+        <View style={[styles.container, {flexDirection: "column", justifyContent: "center", alignItems: "center", flex: 1 }]}>
+      <Image source={require('@/assets/images/no_data.png')} style={styles.emptyImage}/>
+      <Text style={styles.emptyText}>No categories found</Text>
         </View>
       )}
 
@@ -251,5 +250,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontWeight: "600",
+  },
+  emptyText: {
+    color: "#fff",
+    fontSize: 25,
+    fontWeight: "bold",
+  },
+  emptyImage: {
+    width: width* 0.9, 
+    height: 350,
+    resizeMode: 'contain',
   },
 });

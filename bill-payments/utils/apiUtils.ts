@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Axios from "axios";
 
 export const hostname = () => {
-    let hostUrl = "https://296a-49-15-103-133.ngrok-free.app";
+    let hostUrl = "https://80c4-2402-8100-396b-2184-88a7-4d2b-2143-b770.ngrok-free.app";
     return hostUrl;
 };
 const hostUrl = hostname();

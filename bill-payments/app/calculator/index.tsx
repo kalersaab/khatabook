@@ -372,7 +372,7 @@ import { ObjectId } from "@/utils";
       color: 'white',
     },
     tableView: {
-      height: width <= 320 ? height * 0.35 : height * 0.52,
+      height: height<=831 ? height * 0.41: height <= 870 ? height * 0.44 : height * 0.55,
       padding: width <= 320 ? 5 : 20,
       backgroundColor: 'rgb(75, 75, 75)',
       width: width,

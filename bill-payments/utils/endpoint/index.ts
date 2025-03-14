@@ -8,6 +8,13 @@ export const Cash = {
       uri: '/api/cashManagement/createcash',
     }
   },
+  updateCash: {
+    v1: {
+      ...defaults.methods.PUT,
+      ...defaults.versions.v2,
+      uri: '/api/cashManagement/updatecash/:id',
+    }
+  },
   getCash: {
     v1: {
       ...defaults.methods.GET,

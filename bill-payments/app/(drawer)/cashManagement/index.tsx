@@ -5,7 +5,7 @@ import { View, Image, Text, Dimensions, StyleSheet, TouchableOpacity, ToastAndro
 import { FlatList } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import moment from 'moment'
-import { useCreateCash, useDeleteCash } from '@/hooks/mutation';
+import { useCreateCash, useDeleteCash, useUpdateCash } from '@/hooks/mutation';
 import { radiobutton } from '@/extra';
 import RadioGroup from 'react-native-radio-buttons-group';
 import { queryClient } from '@/app/_layout';
@@ -16,27 +16,53 @@ const Cash = () => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const [notes, setNotes] = React.useState("");
+  const [cashId, setCashId] = React.useState('');
   const cashapi:any = useGetCash();
 const createCash = useCreateCash();
-const saveCash = () => {
+const updateCash = useUpdateCash();
+const saveCash = async () => {
   if (!inputValue || !notes) {
     ToastAndroid.show('Please fill all the fields', ToastAndroid.SHORT);
     return;
   }
-  createCash.mutateAsync({
-    amount: inputValue,
-    notes,
-    type
-  }).then((res) => {
-    ToastAndroid.show('Added successfully', ToastAndroid.SHORT);
-    queryClient.refetchQueries({ queryKey: ["Cash"] });
-    setModalVisible(false);
-    setInputValue('');
-    setNotes('');
-  }).catch((err) => {
-    ToastAndroid.show('Error adding cash', ToastAndroid.SHORT);
-  })
-}
+
+  try {
+    let payload ={
+      amount: inputValue,
+      notes,
+      type
+    }
+    const response:any = cashId
+      ? await updateCash.mutateAsync({
+          pathParams: {id: cashId },
+          payload
+        })
+      : await createCash.mutateAsync({
+          amount: inputValue,
+          notes,
+          type
+        });
+
+    if (response?.status === 200) {
+      ToastAndroid.show(`${cashId ? 'Updated' : 'Added'} successfully`, ToastAndroid.SHORT);
+    } else {
+      ToastAndroid.show('Server error', ToastAndroid.SHORT);
+    }
+
+    queryClient.invalidateQueries("Cash");
+    resetForm();
+  } catch (err) {
+    ToastAndroid.show(`Error ${cashId ? 'updating' : 'adding'} cash`, ToastAndroid.SHORT);
+    console.error(err);
+  }
+};
+
+const resetForm = () => {
+  setModalVisible(false);
+  setInputValue('');
+  setNotes('');
+};
+
     const cash = cashapi?.data?.data?.data?.map((item:any)=>item) ?? []
 const deleteCash = useDeleteCash();
 const handleDelete = (id:any) => {
@@ -58,17 +84,27 @@ const handleDelete = (id:any) => {
  })
 }
 const closeModal = () => {
+  setInputValue('');
+  setNotes('');
   setModalVisible(false);
 };
-const openModalForAdd = () => {
-  setInputValue("");
+const openModalForAdd = (id:any) => {
+  if (id) {
+    const cash = cashapi?.data?.data?.data?.find((item:any) => item._id === id);
+    if (cash) {
+      setCashId(id);
+      setInputValue(cash.amount);
+      setNotes(cash.notes);
+      setType(cash.type);
+    }
+  }
   setModalVisible(true);
 };
-  const renderLeftActions = () => {
+  const renderLeftActions = (id:string) => {
     return (
       <TouchableOpacity 
         style={styles.leftAction} 
-        onPress={() => console.log('Edit pressed')}
+        onPress={() => openModalForAdd(id)}
       >
         <Text style={styles.actionText}>Edit</Text>
       </TouchableOpacity>
@@ -88,7 +124,7 @@ const openModalForAdd = () => {
   const Separator = () => <View style={styles.itemSeparator} />
   const renderItem = ({ item }:any) => (
     <Swipeable
-      renderLeftActions={renderLeftActions}
+      renderLeftActions={()=>renderLeftActions(item?._id)}
       renderRightActions={()=>renderRightActions(item?._id)}
       leftThreshold={width * 0.15}
       rightThreshold={width * 0.15}
@@ -117,7 +153,7 @@ const openModalForAdd = () => {
   }
   const handleModel = (type:string) => {
     setType(type);
-    openModalForAdd();
+    openModalForAdd('');
   }
   return (
     <View style={styles.container}>
@@ -128,7 +164,7 @@ const openModalForAdd = () => {
         ListEmptyComponent={EmptyList}
         ItemSeparatorComponent={()=><Separator />}
       />
-      <FloatingActionButton onLongPress={()=>ToastAndroid.show('Add Button', ToastAndroid.SHORT)} onPress={openModalForAdd}/>
+      <FloatingActionButton onLongPress={()=>ToastAndroid.show('Add Button', ToastAndroid.SHORT)} onPress={() => openModalForAdd('')}/>
         <View style={{flexDirection:'row', width:width, padding:10, margin:10}}>
           <TouchableOpacity style={styles.btn} onPress={() => handleModel('debit')}>
             <Text style={{color: type === 'debit' ? 'white' : 'rgb(221, 221, 221)', textAlign:'center', fontSize:20}}>Debit</Text>

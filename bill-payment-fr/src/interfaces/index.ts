@@ -1,3 +1,5 @@
+import { AxiosRequestHeaders } from "axios";
+
 export interface IList{
     id: number,
     name: string,
@@ -9,3 +11,10 @@ export interface ITable{
     width?: number,
     render?: any
 }
+export interface UriEndPoint {
+    uri: string;
+    path: string;
+    method: string;
+    headerProps?: AxiosRequestHeaders;
+    version: string;
+  }

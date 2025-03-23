@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle */
+ 
 /**
  * Utility methods to be used for invoking API methods
  */
@@ -9,9 +9,7 @@ import queryString from 'querystring';
 
 import { UriEndPoint } from '@/interfaces';
 
-// Interfaces
-
-const hostname = () => '/api';
+const hostname = () => 'http://192.168.41.228:3001/api';
 
 /**
  * Use this to get backend application domain
@@ -227,9 +225,8 @@ export function callApi<ResponseType>({
           signOut();
         }
         if (err?.response?.status === 403) {
-          throw err;
+          window.location.href = '/'
         }
-
         reject(err?.response?.data);
       });
   });

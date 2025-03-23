@@ -9,7 +9,7 @@ export const list :IList[] = [
     {
     id: 1,
     name: 'Category',
-    href:''
+    href:'/categories'
 }, {
     id: 2,
     name: 'Cash Management',

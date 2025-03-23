@@ -1,17 +1,18 @@
-import { ITable } from "@/interfaces"
+import {  ITable } from "@/interfaces"
+import { Table, TableProps } from "antd";
 
     export const columns:ITable[] =[{
     title:'Sr No.',
     dataIndex: 'Sr No.',
-    width:100,
-    render:( _:any, index:number)=>(
+    width:50,
+    render:( _:any,record:any, index:number)=>(
         <div>{index+1}</div>)
 },{
     title:'Details',
-    dataIndex: 'Details',
+    dataIndex: 'productName',
     width:100,
-    render:( record:{details:string})=>(
-        <div>{record?.details}</div>)
+    render:( text:any)=>(
+        <div>{text}</div>)
 },
 {
     title:'Quantity',
@@ -35,46 +36,63 @@ import { ITable } from "@/interfaces"
         <div>{record?.total}</div>)
 }
 ]
-
-export const Cash:ITable[] = [{
+interface TableComponentProps extends TableProps<any> {
+    data: any[];
+    handleDelete: (id: string) => void; 
+    handleEdit: (id: string, existingData: any) => void;
+  }
+const TableComponent: React.FC<TableComponentProps> = ({ data, handleDelete, handleEdit, ...props }) => {
+ const Cash:ITable[] = [{
     title:'Sr No.',
     dataIndex: 'Sr No.',
-    width:100,
+    width:50,
     render:(text:any, _:any, index:number)=>(
         <div>{index+1}</div>)
 },
 {
     title:'Date',
     dataIndex: 'Date',
-    width:100,
-    render:(text:any, record:{date:string})=>(
-        <div>{record?.date}</div>)
+    width:120,
+    render:(text:any, record:{createdAt:string})=>(
+        <div>{new Date(record?.createdAt).toLocaleString()}</div>)
 },
 {
     title:'Amount',
     dataIndex: 'Amount',
-    width:100,
+    width:70,
     render:(text:any, record:{amount:string})=>(
         <div>{record?.amount}</div>)
 },{
     title:'Description',
-    dataIndex: 'Description',
-    width:100,
-    render:(text:any, record:{description:string})=>(
-        <div>{record?.description}</div>)
+    dataIndex: 'notes',
+    width:300,
+    render:(_:any, record:{notes:string})=>(
+        <div>{record?.notes}</div>)
     
 },
 {
-    title:'type',
+    title:'Type',
     dataIndex: 'type',
-    width:100,
-    render:(text:any, record:{type:string})=>(
-        <div>{record?.type}</div>)
+    width:50,
+    render: (text: any, record: { type: string }) => (
+        <p className={record?.type === "debit" ? "text-red-600 font-bold" : "text-green-600 font-bold" }>
+         {text}
+        </p>)
 },
 {
     title:'Action',
     dataIndex: 'Action',
-    width:100,
-    render:(text:any, record:{action:string})=>(
-        <div>{record?.action}</div>)
+    width:80,
+    render:(_:any, record:{_id:string})=>(
+        <div className="flex justify-between">
+            <div>
+        <button className="cursor-pointer text-red-500" onClick={()=>handleDelete(record?._id)} > 🗑 Delete</button>
+        </div>
+        <div>
+        <button className="cursor-pointer text-blue-500" onClick={()=>handleEdit(record?._id, record)} > edit </button>
+        </div>
+        </div>)
 }]
+return <Table columns={Cash} dataSource={data ?? []} rowKey="_id" {...props} />;
+}
+export default TableComponent;

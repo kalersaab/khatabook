@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Axios from "axios";
+import { Alert, ToastAndroid } from "react-native";
 
 export const hostname = () => {
-    let hostUrl = "https://80c4-2402-8100-396b-2184-88a7-4d2b-2143-b770.ngrok-free.app";
+    let hostUrl = "http://192.168.41.228:3001/api";
     return hostUrl;
 };
 const hostUrl = hostname();
@@ -61,7 +62,7 @@ const callAxios = async ({
     body,
     apiHostUrl,
 }: any) => {
-    console.log(makeUrl({ ...uriEndPoint, pathParams, query }, apiHostUrl));
+    // console.log(makeUrl({ ...uriEndPoint, pathParams, query }, apiHostUrl));
 
     return Axios({
         method: uriEndPoint.method,
@@ -126,34 +127,20 @@ export const callApi = ({
             })
 
             .catch(async (err) => {
-                console.log(err?.response?.status, "error");
-                if (!err.response) {
+                if (err?.response?.status === 400) {
+                    Alert.alert("Bad Request", err?.response?.data?.message);
+                }
+                 else if (err?.response?.status === 403) {
+Alert.alert("Session Expired", "Your session has expired. Please login again.");
+                }
+                if (err?.response?.status === 404) {
+                    ToastAndroid.show("No data found", ToastAndroid.SHORT);
+                }
+                else if (!err.response) {
                     reject(err);
                     return;
                 }
-                else if (err?.response?.status === 401) {
-
-                    //    refresh(refreshToken)
-                    //      .then(async (res: any) => {
-                    //        await AsyncStorage.setItem("refreshToken", res.refreshToken);
-                    //        await AsyncStorage.setItem("accessToken", res.accessToken);
-                    //        callAxios({
-                    //          uriEndPoint,
-                    //          pathParams,
-                    //          query,
-                    //          body,
-                    //          apiHostUrl,
-                    //        })
-                    //          .then((response) => {
-                    //            return resolve(response.data);
-                    //            // localStorage.setItem("timer", 1800);
-                    //          })
-                    //          .catch(() => reject(err.response));
-                    //      })
-                    //      .catch((err) => {
-                    //        return reject(err.response);
-                    //      });
-                } else {
+                 else {
                     return reject(err.response);
                 }
             });

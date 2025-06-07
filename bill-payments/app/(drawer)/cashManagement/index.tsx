@@ -1,102 +1,95 @@
 import FloatingActionButton from '@/components/float';
-import { useGetCash } from '@/hooks/query';
 import React from 'react';
 import { View, Image, Text, Dimensions, StyleSheet, TouchableOpacity, ToastAndroid, Modal, TextInput } from 'react-native';
 import { FlatList } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import moment from 'moment'
-import { useCreateCash, useDeleteCash, useUpdateCash } from '@/hooks/mutation';
+import { useAddCash, useDeleteCash, useUpdateCash } from '@/hooks/mutation';
 import { radiobutton } from '@/extra';
 import RadioGroup from 'react-native-radio-buttons-group';
 import { queryClient } from '@/app/_layout';
+import { useGetCash } from '@/hooks/query';
+import { useFormik } from 'formik';
+import { IFormikCash } from '@/interface';
 const { width } = Dimensions.get('window');
 
 const Cash = () => {
   const [type, setType] = React.useState('debit');
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState("");
-  const [notes, setNotes] = React.useState("");
   const [cashId, setCashId] = React.useState('');
-  const cashapi:any = useGetCash();
-const createCash = useCreateCash();
-const updateCash = useUpdateCash();
-const saveCash = async () => {
-  if (!inputValue || !notes) {
-    ToastAndroid.show('Please fill all the fields', ToastAndroid.SHORT);
-    return;
-  }
-
-  try {
-    let payload ={
-      amount: inputValue,
-      notes,
-      type
-    }
-    const response:any = cashId
-      ? await updateCash.mutateAsync({
-          pathParams: {id: cashId },
-          payload
+  const {data, refetch}:any = useGetCash({});
+const addCash :any= useAddCash();
+const updateCash:any = useUpdateCash();
+const formik = useFormik<IFormikCash>({
+  initialValues: {
+    amount: 0,
+    notes: "",
+    type: "credit",
+  },
+    enableReinitialize: true,
+  onSubmit: (values) => {
+    if(cashId){
+      updateCash
+       .mutateAsync({ pathParams:{id:cashId}, body: values })
+       .then((res: any) => {
+          if (res?.status === 201) {
+            formik.resetForm();
+            setCashId('');
+            refetch();
+            setModalVisible(!modalVisible);
+          } else {
+          }
         })
-      : await createCash.mutateAsync({
-          amount: inputValue,
-          notes,
-          type
-        });
-
-    if (response?.status === 200) {
-      ToastAndroid.show(`${cashId ? 'Updated' : 'Added'} successfully`, ToastAndroid.SHORT);
-    } else {
-      ToastAndroid.show('Server error', ToastAndroid.SHORT);
+       .catch(() => ToastAndroid.show('Error updating cash', ToastAndroid.SHORT));
+    } else{
+    addCash
+      .mutateAsync({ body: values })
+      .then((res: any) => {
+        if (res?.status === 201) {
+          formik.resetForm();
+          refetch();
+          setModalVisible(!modalVisible);
+          ToastAndroid.show('Added successfully', ToastAndroid.SHORT);
+        } else {
+          if (res?.status === 400) {
+            ToastAndroid.show('Bad Request', ToastAndroid.SHORT);
+        }
+      }
+      })
+      .catch(() =>ToastAndroid.show('Error adding cash', ToastAndroid.SHORT));
     }
+  },
+});
 
-    queryClient.invalidateQueries("Cash");
-    resetForm();
-  } catch (err) {
-    ToastAndroid.show(`Error ${cashId ? 'updating' : 'adding'} cash`, ToastAndroid.SHORT);
-    console.error(err);
-  }
-};
-
-const resetForm = () => {
-  setModalVisible(false);
-  setInputValue('');
-  setNotes('');
-};
-
-    const cash = cashapi?.data?.data?.data?.map((item:any)=>item) ?? []
-const deleteCash = useDeleteCash();
+const cash =
+data?.pages?.reduce(
+  (acc: any, obj: any) => acc.concat(obj?.data?.cash),
+  []
+) || [];                                     
+const deleteCash:any = useDeleteCash();
 const handleDelete = (id:any) => {
- deleteCash.mutateAsync({pathParams:{
-  id:id
- }}).then((res:any) => { 
+ deleteCash.mutateAsync({id:id}).then((res:any) => { 
   if(res?.status === 200){
   ToastAndroid.show('Deleted successfully', ToastAndroid.SHORT);
-  queryClient.refetchQueries({ queryKey: ["Cash"] });
+  refetch();
 }else{
   ToastAndroid.show('Not found', ToastAndroid.SHORT)
   queryClient.refetchQueries({ queryKey: ["Cash"] });
 
 }
- }).catch((err) => {
+ }).catch(() => {
   ToastAndroid.show('Error deleting cash', ToastAndroid.SHORT);
   queryClient.refetchQueries({ queryKey: ["Cash"] });
 
  })
 }
 const closeModal = () => {
-  setInputValue('');
-  setNotes('');
   setModalVisible(false);
 };
 const openModalForAdd = (id:any) => {
   if (id) {
-    const cash = cashapi?.data?.data?.data?.find((item:any) => item._id === id);
-    if (cash) {
-      setCashId(id);
-      setInputValue(cash.amount);
-      setNotes(cash.notes);
-      setType(cash.type);
-    }
+    formik.setValues(cash.find((item:any) => item._id === id));
+    setCashId(id);
   }
   setModalVisible(true);
 };
@@ -183,31 +176,35 @@ const openModalForAdd = (id:any) => {
                   <View style={styles.modalContainer}>
                     <Text style={styles.modalTitle}>Cash</Text>
                     <TextInput
-                      style={styles.textInput}
-                      placeholder="Amount"
-                      keyboardType='number-pad'
-                      placeholderTextColor="#ccc"
-                      value={inputValue}
-                      onChangeText={setInputValue}
-                      autoFocus
-                    />
+  style={styles.textInput}
+  placeholder="Amount"
+  keyboardType="numeric" // Ensures only number keyboard appears
+  placeholderTextColor="#ccc"
+  value={formik.values.amount.toString()}
+  onChangeText={(text) => {
+    const numericText = text.replace(/[^0-9]/g, '');
+    formik.setFieldValue('amount', parseInt(numericText));
+  }}
+  autoFocus
+/>
                     <TextInput
                       style={styles.textInput}
                       placeholder="Notes"
                       placeholderTextColor="#ccc"
-                      value={notes}
-                      onChangeText={setNotes}
+                      value={formik.values.notes}
+                      onChangeText={formik.handleChange('notes')}
+                      multiline
                     />
                     <RadioGroup
                       radioButtons={radiobutton}
-                      onPress={setType}
-                      selectedId={type}
+                      onPress={formik.handleChange('type')}
+                      selectedId={formik.values.type}
                       labelStyle={{color: '#fff', fontSize: 20}}
                       layout='row'
                       containerStyle={{margin:10, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}
                     />
                     <View style={styles.buttonRow}>
-                      <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={() =>saveCash()}>
+                      <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={() =>formik.handleSubmit()}>
                         <Text style={styles.buttonText}>Save</Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={closeModal}>

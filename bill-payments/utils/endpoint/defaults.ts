@@ -14,7 +14,7 @@ export const defaults = {
       },
     },
     versions: {
-      v2: {
+      v1: {
         version: '',
       },
     },

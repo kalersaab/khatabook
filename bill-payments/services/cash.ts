@@ -1,21 +1,30 @@
-import { Cash } from "@/utils/endpoint";
-import { callApi } from "../utils/apiUtils";
+import { ICash } from "@/interface";
+import { callApi } from "@/utils/apiUtils";
+import { cash } from "@/utils/endpoint/cash";
 
-export const GetCash = () =>
-  callApi({
-    uriEndPoint: { ...Cash.getCash.v1 },
-  });
-export const DeleteCash = ({ pathParams }: any) =>
-  callApi({
-    uriEndPoint: { ...Cash.deletecash.v1 },
-    pathParams,
-  });
-export const CreateCash = (body: any) =>
-  callApi({ uriEndPoint: { ...Cash.createCash.v1 }, body });
-export const UpdateCash = ({ pathParams, payload }: any) => {
-  return callApi({
-    uriEndPoint: { ...Cash.updateCash.v1 },
-    pathParams,
-    body: payload,
-  });
-};
+class cashService {
+  public addCash = ({ body }: any) =>
+    callApi({
+      uriEndPoint: cash.addCash.v1,
+      body,
+    });
+
+  public getCash= (query:any)=> {
+    return callApi({
+      uriEndPoint: {...cash.getCash.v1}, query
+    });
+  }
+  public deleteCash = (pathParams:any)=>{
+    return callApi({
+      uriEndPoint: {...cash.deleteCash.v1},
+      pathParams,
+    });
+  }
+  public updateCash = ({pathParams, body}:any) => {
+    return callApi({
+      uriEndPoint: {...cash.updateCash.v1},
+      pathParams,
+      body,
+    });}
+}
+export default cashService;

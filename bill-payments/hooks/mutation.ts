@@ -1,31 +1,14 @@
-import { queryClient } from "@/app/_layout";
-import { CreateCash, DeleteCash, UpdateCash } from "@/services/cash";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query"
+import { ICash } from "@/interface"
+import cashService from "@/services/cash"
 
-export const useDeleteCash = () => {
-  return useMutation((payload: any) => DeleteCash(payload));
-};
-export const useCreateCash = () => {
-  return useMutation((payload: any) => {
-    return CreateCash(payload)
-      .then(async (res) => {
-        await queryClient.refetchQueries({ queryKey: ["Cash"] });
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
-};
-export const useUpdateCash = () => {
-  return useMutation((payload: any) => {
-    return UpdateCash(payload)
-      .then(async (res) => {
-        await queryClient.refetchQueries({ queryKey: ["Cash"] });
-        return res;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
-};
+const { addCash, deleteCash, updateCash } = new cashService()
+
+export const useAddCash = () =>
+  useMutation<any, any, any>((payload:any) => addCash(payload));
+
+export const useDeleteCash = () =>
+  useMutation((payload) => deleteCash(payload));
+
+export const useUpdateCash = () =>
+  useMutation<void, Error, ICash>((payload: ICash) => updateCash(payload));

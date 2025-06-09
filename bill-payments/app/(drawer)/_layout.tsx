@@ -146,34 +146,6 @@ const DrawerLayout = () => {
           ),
         }}
       />
-    <Drawer.Screen
-        name="login/index"
-        options={{
-          headerShown: true,
-          title: "Login",
-          headerTintColor: "rgb(189, 189, 189)",
-          headerStyle: {
-            backgroundColor: "rgb(75,75,75)",
-          },
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontSize: 20,
-            fontWeight: "bold",
-            color: "rgb(255, 255, 255)",
-          },
-          drawerStyle: {
-            backgroundColor: "rgb(75,75,75)",
-          },
-          drawerLabelStyle: {
-            color: "rgb(255, 255, 255)",
-          },
-          drawerActiveBackgroundColor: "rgb(122, 122, 122)",
-          drawerIcon: ({ focused, color, size }) => (
-            <Text style={{ color: color, fontSize: size }}>🔒</Text>
-
-          ),
-        }}
-      />
     
     </Drawer>
   );

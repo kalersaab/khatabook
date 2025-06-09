@@ -3,7 +3,7 @@ import Axios from "axios";
 import { Alert, ToastAndroid } from "react-native";
 
 export const hostname = () => {
-    let hostUrl = "http://192.168.41.228:3001/api";
+    let hostUrl = "http://192.168.41.229:3001/api";
     return hostUrl;
 };
 const hostUrl = hostname();

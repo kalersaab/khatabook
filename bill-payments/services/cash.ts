@@ -3,15 +3,26 @@ import { callApi } from "@/utils/apiUtils";
 import { cash } from "@/utils/endpoint/cash";
 
 class cashService {
-  public addCash = ({ body }: any) =>
-    callApi({
-      uriEndPoint: cash.addCash.v1,
+  public addCash = ({ body }: any) =>{
+    return callApi({
+      uriEndPoint: {...cash.addCash.v1},
       body,
     });
+  }
 
-  public getCash= (query:any)=> {
-    return callApi({
+  public getCash= async(query:any)=> {
+    return await callApi({
       uriEndPoint: {...cash.getCash.v1}, query
+    }).then((res:any) => {
+     if(res.status === 200) {
+        return res
+      }
+      else{
+        return []
+      }
+    }).catch((err:any) => {
+      console.error('Error fetching cash:', err);
+      throw err;
     });
   }
   public deleteCash = (pathParams:any)=>{

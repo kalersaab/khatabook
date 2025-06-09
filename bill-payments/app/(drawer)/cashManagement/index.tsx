@@ -14,10 +14,10 @@ import { IFormikCash } from '@/interface';
 const { width } = Dimensions.get('window');
 
 const Cash = () => {
-  const [type, setType] = React.useState('debit');
+  const [type, setType] = React.useState<string>('debit');
   const [modalVisible, setModalVisible] = React.useState(false);
   const [cashId, setCashId] = React.useState('');
-  const {data, refetch}:any = useGetCash({});
+  const {data, refetch:refetchData, error}:any = useGetCash({});
 const addCash :any= useAddCash();
 const updateCash:any = useUpdateCash();
 const formik = useFormik<IFormikCash>({
@@ -31,11 +31,12 @@ const formik = useFormik<IFormikCash>({
     if(cashId){
       updateCash
        .mutateAsync({ pathParams:{id:cashId}, body: values })
-       .then((res: any) => {
-          if (res?.status === 201) {
+       .then(async(res: any) => {
+          if (res?.status === 200) {
+            refetchData();
+            ToastAndroid.show('Updated successfully', ToastAndroid.SHORT);
             formik.resetForm();
             setCashId('');
-            refetch();
             setModalVisible(!modalVisible);
           } else {
           }
@@ -46,8 +47,8 @@ const formik = useFormik<IFormikCash>({
       .mutateAsync({ body: values })
       .then((res: any) => {
         if (res?.status === 201) {
+          queryClient.refetchQueries({ queryKey: ["getCash"] });
           formik.resetForm();
-          refetch();
           setModalVisible(!modalVisible);
           ToastAndroid.show('Added successfully', ToastAndroid.SHORT);
         } else {
@@ -56,30 +57,42 @@ const formik = useFormik<IFormikCash>({
         }
       }
       })
-      .catch(() =>ToastAndroid.show('Error adding cash', ToastAndroid.SHORT));
+      .catch((err:any) =>{
+        console.log('err', err)
+      });
     }
   },
 });
 
-const cash =
-data?.pages?.reduce(
+const cash = data?.pages?.reduce(
   (acc: any, obj: any) => acc.concat(obj?.data?.cash),
   []
-) || [];                                     
+) || [];     
+ const totals = React.useMemo(() => {
+    return cash.reduce((acc: { credit: number; debit: number }, item: any) => {
+      const amount = Number(item.amount) || 0;
+      if (item.type === 'credit') {
+        acc.credit += amount;
+      } else if (item.type === 'debit') {
+        acc.debit += amount;
+      }
+      return acc;
+    }, { credit: 0, debit: 0 });
+  }, [cash]);
 const deleteCash:any = useDeleteCash();
-const handleDelete = (id:any) => {
- deleteCash.mutateAsync({id:id}).then((res:any) => { 
+const handleDelete = async(id:any) => {
+ deleteCash.mutateAsync({id:id}).then(async(res:any) => { 
   if(res?.status === 200){
   ToastAndroid.show('Deleted successfully', ToastAndroid.SHORT);
-  refetch();
+  await refetchData();
 }else{
   ToastAndroid.show('Not found', ToastAndroid.SHORT)
-  queryClient.refetchQueries({ queryKey: ["Cash"] });
+  queryClient.refetchQueries({ queryKey: ["getCash"] });
 
 }
  }).catch(() => {
   ToastAndroid.show('Error deleting cash', ToastAndroid.SHORT);
-  queryClient.refetchQueries({ queryKey: ["Cash"] });
+  queryClient.refetchQueries({ queryKey: ["getCash"] });
 
  })
 }
@@ -145,6 +158,7 @@ const openModalForAdd = (id:any) => {
     );
   }
   const handleModel = (type:string) => {
+    formik.setFieldValue('type', type);
     setType(type);
     openModalForAdd('');
   }
@@ -152,7 +166,7 @@ const openModalForAdd = (id:any) => {
     <View style={styles.container}>
       <FlatList 
         data={cash}
-        keyExtractor={item =>item._id}
+        keyExtractor={item => item._id}
         renderItem={renderItem}
         ListEmptyComponent={EmptyList}
         ItemSeparatorComponent={()=><Separator />}
@@ -160,10 +174,10 @@ const openModalForAdd = (id:any) => {
       <FloatingActionButton onLongPress={()=>ToastAndroid.show('Add Button', ToastAndroid.SHORT)} onPress={() => openModalForAdd('')}/>
         <View style={{flexDirection:'row', width:width, padding:10, margin:10}}>
           <TouchableOpacity style={styles.btn} onPress={() => handleModel('debit')}>
-            <Text style={{color: type === 'debit' ? 'white' : 'rgb(221, 221, 221)', textAlign:'center', fontSize:20}}>Debit</Text>
+            <Text style={{color: type === 'debit' ? 'white' : 'rgb(221, 221, 221)', textAlign:'center', fontSize:20}}>{totals.debit} </Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.btn,{backgroundColor:'green'}]} onPress={() => handleModel('credit')}>
-            <Text style={{color: type === 'credit' ? 'white' : 'rgb(221, 221, 221)', textAlign:'center', fontSize:20}}>Credit</Text>
+            <Text style={{color: type === 'credit' ? 'white' : 'rgb(221, 221, 221)', textAlign:'center', fontSize:20}}>{totals.credit}</Text>
           </TouchableOpacity>
         </View>
           <Modal

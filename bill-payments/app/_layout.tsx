@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Stack } from 'expo-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { View,Text } from 'react-native';
-
 export const queryClient = new QueryClient();
 const Splashscreen = () => {
   return (
@@ -18,7 +17,6 @@ const Splashscreen = () => {
 }
 const RootLayout = () => {
   const [showSplash, setShowSplash] = useState(true);
-
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 3000);
     return () => clearTimeout(timer);
@@ -28,8 +26,34 @@ const RootLayout = () => {
         {showSplash ? (
           <Splashscreen />
         ) : (
-          <Stack>
-          <Stack.Screen
+          <Stack initialRouteName='login/index'>
+        
+            <Stack.Screen
+        name="login/index"
+        options={{
+          headerShown: false,
+          title: "Login",
+          headerTintColor: "rgb(189, 189, 189)",
+          headerStyle: {
+            backgroundColor: "rgb(75,75,75)",
+          },
+          headerTitleAlign: "center",
+          headerTitleStyle: {
+            fontSize: 20,
+            fontWeight: "bold",
+            color: "rgb(255, 255, 255)",
+          },}}
+      />
+           <Stack.Screen
+            name="signup/index"
+            options={{
+              title:'SignUp',
+              headerTitleAlign:'center',
+              sheetCornerRadius:20,
+              headerShown: true,
+            }}
+          />
+            <Stack.Screen
             name="(drawer)"
             options={{
               headerShown: false,

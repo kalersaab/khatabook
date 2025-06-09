@@ -4,7 +4,8 @@ import { useMutation } from "@tanstack/react-query";
 const {addUser, loginUser} = new UserService();
 
 export function useAddUser() {
-    return useMutation((payload) =>  addUser(payload))
+    return useMutation({
+        mutationFn:(payload) =>  addUser(payload)})
 }
 export const useLoginUser =()=>
-     useMutation((payload)=>loginUser(payload))
+     useMutation({mutationFn:(payload)=>loginUser(payload)})

@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ToastAndroid } from 'react-native';
+import { StyleSheet, Text, Pressable,TextInput, TouchableOpacity, View, Image, ToastAndroid } from 'react-native';
 import { useFormik } from "formik";
 import { useLoginUser } from '@/hooks/users/mutation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 const Login = () => {
-  const navigation = useNavigation();
   const loginUser :any= useLoginUser() 
   const formik = useFormik({
-    initialValues: {
+    initialValues: {  
       username: "",
       password: "",
     },
     onSubmit: (values) => {
         loginUser.mutateAsync({ body:values })
          .then((res: any) => {
-          console.log(' res?.data?.token',  res?.data?.token)
           AsyncStorage.setItem('authToken', res?.data?.token)
            ToastAndroid.show(res?.message, ToastAndroid.SHORT)
-            navigation.navigate('index')
             formik.resetForm();
           })
          .catch((err: { message: string }) => {
@@ -56,8 +53,12 @@ const Login = () => {
         <Text style={styles.buttonText}>Sign in</Text>
       </TouchableOpacity>
       <Text style={styles.footerText}>
-        New to Bill payments? <Text style={styles.link}>Create an account</Text>.
+        New to Bill payments?
       </Text>
+        <Pressable onPress={()=>router.push('/signup')}> 
+          <Text style={styles.link}>Create an account</Text>
+          </Pressable>
+
     </View>
   );
 };

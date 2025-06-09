@@ -17,6 +17,7 @@ import {
   import AsyncStorage from "@react-native-async-storage/async-storage";
   import 'react-native-gesture-handler';
 import { ObjectId } from "@/utils";
+import { useCreateInvoice } from "@/hooks/invoice";
   const { height, width } = Dimensions.get("window");
   const Calculator = () => {
     const [display, setDisplay] = useState("");
@@ -31,6 +32,7 @@ import { ObjectId } from "@/utils";
       price: string;
       detail: string;
     }>>([]);
+    const createInvoice = useCreateInvoice()
     const HandleButton = (value: string) => {
       if (editingField === 'detail' && editingDetailId !== null) {
         // Handle detail editing
@@ -116,11 +118,23 @@ import { ObjectId } from "@/utils";
           price: price,
           detail: details[id] || "" 
         };
-  
+        setDetails(prev => ({
+          ...prev,
+          [id]: details[id] || ""
+        }));
+        // createInvoice.mutateAsync(details as any).then((res:any)=>{
+        //         if(res.status === 200){}}).catch((err:any)=>{
+        //         console.error('Error creating invoice:', err);
+        //       })
         setTotalList(prev => [newEntry, ...prev]);
         setDisplay("");
         setRate("");
       }
+      else if(quantity <= 0 || rateValue <= 0) {
+        ToastAndroid.show('Please enter valid quantity and rate', ToastAndroid.SHORT);
+
+      }
+
     };
     const handleDetailChange = (id: string, text: string) => {
       setDetails(prev => ({
@@ -276,6 +290,7 @@ import { ObjectId } from "@/utils";
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
+            onPress={()=>console.log("hit")}
           >
             <Text style={styles.txt}>Save</Text>
           </TouchableOpacity>

@@ -1,7 +1,30 @@
-import { View, Text, StyleSheet,TextInput,Image, Pressable } from 'react-native'
+import { View, Text, StyleSheet,TextInput,Image, Pressable, ToastAndroid } from 'react-native'
 import React from 'react'
+import { useFormik } from 'formik'
+import { useSignupUser } from '@/hooks/users/mutation';
 
 const SignUp = () => {
+  const signup:any = useSignupUser();
+    const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "", 
+      password: "",
+    },
+    onSubmit: (values) => {
+      console.log(values);
+      signup.mutateAsync({ body: values })
+        .then((res: any) => {
+          console.log(res);
+          formik.resetForm();
+        })
+        .catch((err: { message: string }) => {
+          console.error(err.message);
+          formik.resetForm();
+        });
+    }
+  })
   return (
     <View style={styles.container}>
           <Image
@@ -12,36 +35,36 @@ const SignUp = () => {
                      <TextInput
               style={styles.input}
               placeholder="firstName "
-            //   value={formik.values.username}
-            //   onChangeText={formik.handleChange('username')}
+              value={formik.values.firstName}
+              onChangeText={formik.handleChange('firstName')}
               autoCapitalize="none"
               placeholderTextColor="#aaa"
             />
                         <TextInput
               style={styles.input}
               placeholder="lastName "
-            //   value={formik.values.username}
-            //   onChangeText={formik.handleChange('username')}
+              value={formik.values.lastName}
+              onChangeText={formik.handleChange('lastName')}
               autoCapitalize="none"
               placeholderTextColor="#aaa"
             />
             <TextInput
               style={styles.input}
               placeholder="Email "
-            //   value={formik.values.username}
-            //   onChangeText={formik.handleChange('username')}
+              value={formik.values.email}
+              onChangeText={formik.handleChange('email')}
               autoCapitalize="none"
               placeholderTextColor="#aaa"
             />
             <TextInput
               style={styles.input}
               placeholder="Password"
-            //   value={formik.values.password}
-            //   onChangeText={formik.handleChange('password')}
+              value={formik.values.password}
+              onChangeText={formik.handleChange('password')}
               secureTextEntry
               placeholderTextColor="#aaa"
             />
-              <Pressable style={styles.button} >
+              <Pressable style={styles.button} onPress={() => formik.handleSubmit()} onLongPress={()=>ToastAndroid.show('Signup', ToastAndroid.SHORT)}>
                     <Text style={styles.buttonText}>Sign Up</Text>
                   </Pressable>
     </View>

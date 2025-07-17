@@ -26,7 +26,7 @@ const RootLayout = () => {
         {showSplash ? (
           <Splashscreen />
         ) : (
-          <Stack initialRouteName='login/index'>
+          <Stack initialRouteName='(drawer)'>
         
             <Stack.Screen
         name="login/index"

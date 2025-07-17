@@ -173,11 +173,11 @@ import { useCreateInvoice } from "@/hooks/invoice";
             borderBottomColor: '#ccc',
             paddingVertical: width <= 320 ? 2 : 10,
           }}>
-            <Text style={[styles.tableCell, { width: '10%' }]}>Sr.No.</Text>
-            <Text style={[styles.tableCell, { width: '20%' }]}>Details</Text>
-            <Text style={[styles.tableCell, { width: '20%' }]}>Qty</Text>
-            <Text style={[styles.tableCell, { width: '20%' }]}>Rate</Text>
-            <Text style={[styles.tableCell, { width: '20%' }]}>Total</Text>
+            <Text style={styles.tableCell}>Sr.No.</Text>
+            <Text style={styles.tableCell}>Details</Text>
+            <Text style={styles.tableCell}>Qty</Text>
+            <Text style={styles.tableCell}>Rate</Text>
+            <Text style={styles.tableCell}>Total</Text>
           </View>
   
           <ScrollView>
@@ -198,7 +198,7 @@ import { useCreateInvoice } from "@/hooks/invoice";
                   style={[
                     styles.tableCell,
                     {
-                      width: '20%',
+                      width: width <= 320 ? width * 0.5 : width * 0.2,
                       backgroundColor: editingDetailId === item.id ? '#fff9c4' : 'rgb(75, 75, 75)',
                       color: editingDetailId === item.id ?'rgb(0,0,0)':'rgb(255, 255, 255)',
                       borderRadius: 10,
@@ -354,7 +354,7 @@ import { useCreateInvoice } from "@/hooks/invoice";
     },
     btn: {
       width: Platform.OS === "ios" ? width * 0.25 : width * 0.255,
-      padding: width <= 320 ? 10 : 25,
+      padding: width <= 320 ? 10 : 20,
       backgroundColor: "rgb(148, 148, 148)",
     },
     button: {
@@ -385,6 +385,7 @@ import { useCreateInvoice } from "@/hooks/invoice";
       textAlign: 'center',
       paddingHorizontal: 8,
       color: 'white',
+      width: width <= 320 ? width*0.5 : width * 0.2,
     },
     tableView: {
       height: height<=831 ? height * 0.41: height <= 870 ? height * 0.44 : height * 0.55,

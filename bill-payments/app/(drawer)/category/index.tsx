@@ -14,6 +14,7 @@ import { Feather, MaterialIcons } from "@expo/vector-icons";
 import FloatingActionButton from "@/components/float";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ObjectId } from "@/utils";
+import { usecreateCategory } from "@/hooks/category/mutation";
 
 const { height, width } = Dimensions.get("window");
 
@@ -22,7 +23,7 @@ const  CategoryItem = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
-
+  const createcategory = usecreateCategory();
   useEffect(() => {
     loadCategories();
   }, []);

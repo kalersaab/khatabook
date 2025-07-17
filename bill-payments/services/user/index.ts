@@ -10,5 +10,9 @@ class UserService {
          callApi({
             uriEndPoint:user.loginUser.v1,body
         })
+    public signup = async ({body}:any)=>
+         callApi({
+            uriEndPoint:user.signup.v1,body
+        })
 }
 export default UserService

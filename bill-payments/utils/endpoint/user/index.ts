@@ -23,6 +23,13 @@ export const user = {
       uri: '/users/login',
     },
   },
+  signup:{
+    v1: {
+      ...defaults.methods.POST,
+      ...defaults.versions.v1,
+      uri: '/users/signup',
+    },
+  },
   getUser: {
     v1: {
       ...defaults.methods.GET,

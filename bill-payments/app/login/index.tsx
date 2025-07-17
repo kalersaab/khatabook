@@ -8,22 +8,22 @@ const Login = () => {
   const loginUser :any= useLoginUser() 
   const formik = useFormik({
     initialValues: {  
-      username: "",
+      email: "",
       password: "",
     },
-    onSubmit: (values) => {
+    onSubmit: (values) => 
         loginUser.mutateAsync({ body:values })
          .then((res: any) => {
-          AsyncStorage.setItem('authToken', res?.data?.token)
+          AsyncStorage.setItem('authToken', res?.data?.token);
+          router.push('/calculator');
+          
            ToastAndroid.show(res?.message, ToastAndroid.SHORT)
             formik.resetForm();
           })
          .catch((err: { message: string }) => {
           ToastAndroid.show(err?.message, ToastAndroid.SHORT)
             formik.resetForm();
-          });
-  
-        }
+          })
     })
 
   return (
@@ -36,8 +36,8 @@ const Login = () => {
       <TextInput
         style={styles.input}
         placeholder="Email or username"
-        value={formik.values.username}
-        onChangeText={formik.handleChange('username')}
+        value={formik.values.email}
+        onChangeText={formik.handleChange('email')}
         autoCapitalize="none"
         placeholderTextColor="#aaa"
       />

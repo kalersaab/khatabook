@@ -1,0 +1,54 @@
+
+{
+  "about": {
+    "title": "À propos de l'application Calculatrice",
+    "description": "Ceci est une application de paiement de factures simple mais puissante construite avec React Native et Expo.",
+    "features_title": "Fonctionnalités:",
+    "feature1": "Opérations arithmétiques de base",
+    "feature2": "Historique des calculs",
+    "feature3": "Interface propre et intuitive",
+    "version": "Version: 1.0.0",
+    "copyright": "© 2025 Application de paiement de factures. Tous droits réservés."
+  },
+  "settings": {
+    "language":" Langue"
+  },
+   "contact": {
+    "title": "Contactez-nous",
+    "name": "Nom: Gurwinder Singh",
+    "email": "Email: gurwindersingh957@gmail.com",
+    "phone": "Numéro de téléphone: 8437038748",
+    "address": "Adresse: Kaler Kalan, Gurdaspur, Punjab, Inde",
+    "social": "Réseaux sociaux: Facebook, Instagram, Twitter",
+    "version": "Version: 1.0.0",
+    "copyright": "© 2025 Application de paiement de factures. Tous droits réservés."
+  },
+  "drawer": {
+    "calculator": "Calculatrice",
+    "category": "Catégorie",
+    "cashManagement": "Gestion de trésorerie",
+    "about": "À propos",
+    "customers": "Clients",
+    "contactUs": "Contactez-nous",
+    "settings": "Paramètres"
+  },
+  "customer": {
+    "notFound": "Aucun client trouvé",
+    "addCustomertoast": "Ajouter un nouveau client",
+    "addCustomer": "Ajouter un nouveau client",
+    "editCustomer": "Modifier le client",
+    "deleteCustomer": "Supprimer le client",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce client ?",
+    "deleteSuccess": "Client supprimé avec succès",
+    "deleteError": "Erreur lors de la suppression du client",
+    "saveSuccess": "Client enregistré avec succès",
+    "saveError": "Erreur lors de l'enregistrement du client",
+    "name": "Client Nom",
+    "phone": "Téléphone Numéro"
+  },
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "add": "Ajouter"
+}

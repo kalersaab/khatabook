@@ -7,47 +7,56 @@ import {
   Dimensions,
   ToastAndroid,
   Modal,
-  TextInput,Image,
+  TextInput,
+  Image,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import FloatingActionButton from "@/components/float";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ObjectId } from "@/utils";
-import { usecreateCategory } from "@/hooks/category/mutation";
+import {
+  usecreateCategory,
+  useDeleteCategory,
+  useUpdateCategory,
+} from "@/hooks/category/mutation";
+import { useGetCategory } from "@/hooks/category/query";
+import useTranslation from "@/hooks/useTranslation";
+
+type Category = {
+  _id: string;
+  name: string;
+};
 
 const { height, width } = Dimensions.get("window");
 
-const  CategoryItem = () => {
-  const [categories, setCategories] = useState<any>([]);
+const CategoryItem = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [editingIndex, setEditingIndex] = useState(null);
-  const createcategory = usecreateCategory();
-  useEffect(() => {
-    loadCategories();
-  }, []);
-
-  const loadCategories = async () => {
-    try {
-      const savedCategories = await AsyncStorage.getItem("categories");
-      if (savedCategories) {
-        setCategories(JSON.parse(savedCategories));
-      }
-    } catch (error) {
-      ToastAndroid.show("Error loading categories", ToastAndroid.SHORT);
-    }
-  };
+  const [categoryName, setCategoryName] = useState<any>("");
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
+  const createCategory: any = usecreateCategory();
+  const deleteCategory: any = useDeleteCategory();
+  const editCategory: any = useUpdateCategory();
+  const { data, refetch } = useGetCategory({});
+  const categories =
+    data?.pages?.reduce(
+      (acc: any, obj: any) => acc.concat(obj?.data.data),
+      []
+    ) || [];
 
   const openModalForAdd = () => {
-    setInputValue("");
-    setEditingIndex(null);
+    setCurrentCategory(null);
+    setCategoryName("");
+    setIsEditMode(false);
     setModalVisible(true);
   };
 
-  const openModalForEdit = (index:any) => {
-    setInputValue(categories[index].name);
-    setEditingIndex(index);
+  const openModalForEdit = (category: Category) => {
+    setCurrentCategory(category);
+    setCategoryName(category.name);
+    setIsEditMode(true);
     setModalVisible(true);
   };
 
@@ -56,40 +65,68 @@ const  CategoryItem = () => {
   };
 
   const handleSave = async () => {
-    const trimmedValue = inputValue.trim();
-    if (!trimmedValue) {
+    if (!categoryName.trim()) {
       ToastAndroid.show("Category name cannot be empty", ToastAndroid.SHORT);
       return;
     }
-    let newCategories = [...categories];
-    if (editingIndex !== null) {
-      // Edit existing category
-      newCategories[editingIndex].name = trimmedValue;
+    if (currentCategory) {
+      editCategory
+        .mutateAsync({
+          categoryId: currentCategory?._id,
+          body: { name: categoryName },
+        })
+        .then(() => {
+          refetch();
+          setCategoryName("");
+          ToastAndroid.show(t("category.saveSuccess"), ToastAndroid.SHORT);
+          setIsLoading(false);
+        })
+        .catch((err: any) => {
+          console.log("err", err);
+          ToastAndroid.show("Failed to update category", ToastAndroid.SHORT);
+        });
     } else {
-      newCategories.push({ id: ObjectId(), name: trimmedValue });
+      createCategory
+        .mutateAsync({ body: { name: categoryName } })
+        .then(() => {
+          refetch();
+          setCategoryName("");
+          ToastAndroid.show(
+            ` ${
+              isEditMode
+                ? t("category.editCategory")
+                : t("category.addCategoryToast")
+            }`,
+            ToastAndroid.SHORT
+          );
+          setIsLoading(false);
+        })
+        .catch((err: any) => {
+          console.log("err", err);
+          ToastAndroid.show("Failed to add category", ToastAndroid.SHORT);
+        });
+      setIsLoading(false);
     }
+    closeModal();
+  };
 
+  const handleDelete = async (categoryId: string) => {
     try {
-      await AsyncStorage.setItem("categories", JSON.stringify(newCategories));
-      setCategories(newCategories);
-      closeModal();
+      deleteCategory
+        .mutateAsync({ categoryId })
+        .then(() => {
+          ToastAndroid.show(t("category.deleteSuccess"), ToastAndroid.SHORT);
+          refetch();
+        })
+        .catch((err: any) => {
+          console.log("err", err);
+        });
     } catch (error) {
-      ToastAndroid.show("Error saving category", ToastAndroid.SHORT);
+      ToastAndroid.show("Failed to delete category", ToastAndroid.SHORT);
     }
   };
 
-  const handleDelete = async (index:any) => {
-    let newCategories = [...categories];
-    newCategories.splice(index, 1);
-    try {
-      await AsyncStorage.setItem("categories", JSON.stringify(newCategories));
-      setCategories(newCategories);
-    } catch (error) {
-      ToastAndroid.show("Error deleting category", ToastAndroid.SHORT);
-    }
-  };
-
-  const renderCategoryItem = ({ item, index }:any) => (
+  const renderCategoryItem = ({ item }: { item: Category }) => (
     <View style={styles.container}>
       <View style={styles.categoryContainer}>
         <Text style={styles.categoryText}>{item.name}</Text>
@@ -97,41 +134,53 @@ const  CategoryItem = () => {
       <View style={styles.actionContainer}>
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => openModalForEdit(index)}
-          onLongPress={() => ToastAndroid.show("Edit category", ToastAndroid.SHORT)}
+          onPress={() => openModalForEdit(item)}
+          onLongPress={() =>
+            ToastAndroid.show(t("category.editCategory"), ToastAndroid.SHORT)
+          }
         >
-          <Feather name="edit" size={30} color="#fff" />
+          <Feather name="edit" size={24} color="#fff" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={() => handleDelete(index)}
-          onLongPress={() => ToastAndroid.show("Delete category", ToastAndroid.SHORT)}
+          onPress={() => handleDelete(item._id)}
+          onLongPress={() =>
+            ToastAndroid.show(t("category.deleteCategory"), ToastAndroid.SHORT)
+          }
         >
-          <MaterialIcons name="delete" size={30} color="#fff" />
+          <MaterialIcons name="delete" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
     </View>
   );
 
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Image
+        source={require("@/assets/images/no_data.png")}
+        style={styles.emptyImage}
+      />
+      <Text style={styles.emptyText}>{t("category.notFound")}</Text>
+    </View>
+  );
+
   return (
-    <View style={{ flex: 1, backgroundColor: "rgb(39, 39, 39)" }}>
-      {categories.length > 0 ? (
-        <FlatList
-          data={categories}
-          renderItem={renderCategoryItem}
-          keyExtractor={(item:any) => item.id}
-          contentContainerStyle={{ paddingVertical: 10 }}
-        />
-      ) : (
-        <View style={[styles.container, {flexDirection: "column", justifyContent: "center", alignItems: "center", flex: 1 }]}>
-      <Image source={require('@/assets/images/no_data.png')} style={styles.emptyImage}/>
-      <Text style={styles.emptyText}>No categories found</Text>
-        </View>
-      )}
+    <View style={styles.mainContainer}>
+      <FlatList
+        data={categories}
+        renderItem={renderCategoryItem}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={
+          categories.length === 0 && styles.emptyListContent
+        }
+        ListEmptyComponent={renderEmptyState}
+      />
 
       <FloatingActionButton
         onPress={openModalForAdd}
-        onLongPress={() => ToastAndroid.show("Add new category", ToastAndroid.SHORT)}
+        onLongPress={() =>
+          ToastAndroid.show(t("category.addCategoryToast"), ToastAndroid.SHORT)
+        }
       />
 
       <Modal
@@ -142,21 +191,39 @@ const  CategoryItem = () => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Category</Text>
+            <Text style={styles.modalTitle}>
+              {isEditMode
+                ? t("category.editCategory")
+                : t("category.addCategory")}
+            </Text>
             <TextInput
               style={styles.textInput}
-              placeholder="Category Name"
+              placeholder={t("category.name")}
               placeholderTextColor="#ccc"
-              value={inputValue}
-              onChangeText={setInputValue}
+              value={categoryName}
+              onChangeText={setCategoryName}
               autoFocus
             />
             <View style={styles.buttonRow}>
-              <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSave}>
-                <Text style={styles.buttonText}>Save</Text>
+              <TouchableOpacity
+                style={[styles.button, styles.cancelButton]}
+                onPress={closeModal}
+                disabled={isLoading}
+              >
+                <Text style={styles.buttonText}>{t("cancel")}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={closeModal}>
-                <Text style={styles.buttonText}>Cancel</Text>
+              <TouchableOpacity
+                style={[styles.button, styles.saveButton]}
+                onPress={() => handleSave()}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>
+                    {isEditMode ? t("edit") : t("save")}
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
@@ -166,26 +233,33 @@ const  CategoryItem = () => {
   );
 };
 
-export default CategoryItem;
-
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: "rgb(39, 39, 39)",
+  },
   container: {
     flexDirection: "row",
     marginVertical: 10,
     marginHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   categoryContainer: {
     flex: 2,
     borderBottomLeftRadius: 15,
     borderTopLeftRadius: 15,
-    flexDirection: "column",
     backgroundColor: "rgb(75,75,75)",
     justifyContent: "center",
+    paddingVertical: 15,
   },
   categoryText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 25,
+    fontSize: 20,
     textAlign: "center",
   },
   actionContainer: {
@@ -206,6 +280,28 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     alignItems: "center",
   },
+  emptyState: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  emptyListContent: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  emptyText: {
+    color: "#fff",
+    fontSize: 22,
+    fontWeight: "bold",
+    marginTop: 20,
+    textAlign: "center",
+  },
+  emptyImage: {
+    width: width * 0.8,
+    height: 300,
+    resizeMode: "contain",
+  },
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -213,34 +309,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
-    width: width * 0.8,
-    padding: 30,
+    width: width * 0.85,
+    padding: 25,
     backgroundColor: "#333",
-    borderRadius: 10,
+    borderRadius: 15,
   },
   modalTitle: {
-    fontSize: 25,
-    fontWeight: "bold",
     color: "#fff",
-    marginBottom: 10,
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 20,
     textAlign: "center",
   },
   textInput: {
     backgroundColor: "#444",
     color: "#fff",
-    padding: 20,
-    borderRadius: 5,
-    marginBottom: 15,
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 20,
+    fontSize: 16,
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: 10,
   },
   button: {
     flex: 0.48,
-    paddingVertical: 20,
-    borderRadius: 5,
+    paddingVertical: 15,
+    borderRadius: 8,
     alignItems: "center",
+    justifyContent: "center",
+    height: 50,
   },
   saveButton: {
     backgroundColor: "#2ecc71",
@@ -251,15 +351,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontWeight: "600",
-  },
-  emptyText: {
-    color: "#fff",
-    fontSize: 25,
-    fontWeight: "bold",
-  },
-  emptyImage: {
-    width: width* 0.9, 
-    height: 350,
-    resizeMode: 'contain',
+    fontSize: 16,
   },
 });
+
+export default CategoryItem;

@@ -1,0 +1,83 @@
+{
+  "about": {
+    "title": "Acerca de la aplicación de calculadora",
+    "description": "Esta es una aplicación de pago de facturas simple pero potente construida con React Native y Expo.",
+    "features_title": "Características:",
+    "feature1": "Operaciones aritméticas básicas",
+    "feature2": "Historial de cálculos",
+    "feature3": "Interfaz limpia e intuitiva",
+    "version": "Versión: 1.0.0",
+    "copyright": "© 2025 Aplicación de pago de facturas. Todos los derechos reservados."
+  },
+  "settings": {
+    "language": "Idioma"
+  },
+    "contact": {
+    "title": "Contáctenos",
+    "name": "Nombre: Gurwinder Singh",
+    "email": "Correo electrónico: gurwindersingh957@gmail.com",
+    "phone": "Número de teléfono: 8437038748",
+    "address": "Dirección: Kaler Kalan, Gurdaspur, Punjab, India",
+    "social": "Redes sociales: Facebook, Instagram, Twitter",
+    "version": "Versión: 1.0.0",
+    "copyright": "© 2025 Aplicación de pago de facturas. Todos los derechos reservados."
+  },
+   "drawer": {
+    "calculator": "Calculadora",
+    "category": "Categoría",
+    "cashManagement": "Gestión de efectivo",
+    "about": "Acerca de",
+    "customers": "Clientes",
+    "contactUs": "Contáctenos",
+    "settings": "Configuración"
+  },
+  "customer": {
+    "notFound": "No se encontró ningún cliente",
+    "addCustomertoast": "Agregar nuevo cliente",
+    "addCustomer": "Agregar nuevo cliente",
+    "editCustomer": "Editar cliente",
+    "deleteCustomer": "Eliminar cliente",
+    "confirmDelete": "¿Está seguro de que desea eliminar este cliente?",
+    "deleteSuccess": "Cliente eliminado con éxito",
+    "deleteError": "Error al eliminar el cliente",
+    "saveSuccess": "Cliente guardado con éxito",
+    "saveError": "Error al guardar el cliente",
+    "name": "clinte Nombre",
+    "phone": "Teléfono Número"
+  },
+  "category": {
+    "notFound": "No se encontró ninguna categoría",
+    "addCategoryToast": "Agregar nueva categoría",
+    "addCategory": "Agregar nueva categoría",
+    "editCategory": "Editar categoría",
+    "deleteCategory": "Eliminar categoría",
+    "confirmDelete": "¿Está seguro de que desea eliminar esta categoría?",
+    "deleteSuccess": "Categoría eliminada con éxito",
+    "deleteError": "Error al eliminar la categoría",
+    "saveSuccess": "Categoría guardada con éxito",
+    "saveError": "Error al guardar la categoría",
+    "name": "Nombre de la categoría"
+  },
+  "cash": {
+    "title": "Gestión de efectivo",
+    "notFound": "No se encontró ningún registro de efectivo",
+    "addCashToast": "Agregar nuevo registro de efectivo",
+    "addCash": "Agregar efectivo",
+    "editCash": "Editar efectivo",
+    "deleteCash": "Eliminar efectivo",
+    "confirmDelete": "¿Está seguro de que desea eliminar este registro de efectivo?",
+    "deleteSuccess": "Registro de efectivo eliminado con éxito",
+    "deleteError": "Error al eliminar el registro de efectivo",
+    "saveSuccess": "Registro de efectivo guardado con éxito",
+    "saveError": "Error al guardar el registro de efectivo",
+    "amount": "Cantidad",
+    "type": "Tipo",
+    "debit": "Débito",
+    "credit": "Crédito"
+  },
+  "save": "Guardar",
+  "cancel": "Cancelar",
+  "delete": "Eliminar",
+  "edit": "Editar",
+  "add": "Agregar"
+}

@@ -1,38 +1,71 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { StyleSheet } from 'react-native';
-const ContactUs = () => {
-  return (
-    <View style={{flex: 1, backgroundColor: 'rgb(75,75,75)', padding: 20}}>
-   <Text style={{fontSize: 24, fontWeight: 'bold', color: 'white', marginBottom: 20}}>Contact Us</Text>
-    <Text style={styles.text}>
-      Name: Gurwinder Singh
-      </Text>
-    <Text style={styles.text}>
-      Email: gurwindersingh957@gmail.com
-    </Text>
-    <Text style={styles.text}>
-      Phone Number: 8437038748
-    </Text>
-    <Text style={styles.text}>
-      Address: Kaler Kalan, gurdaspur, Punjab, India
-    </Text>
-    <Text style={styles.text}>
-      Social Media: Facebook, Instagram, Twitter
-    </Text>
-    <Text style={styles.text}>
-      Version: 1.0.0
-    </Text>
-    
-    <Text style={{fontSize: 16, color: 'white'}}>
-      © 2025 Bill payment App. All rights reserved.
-    </Text>
-  </View>
-  )
-}
+import { View, Text, StyleSheet } from "react-native";
+import { useTranslation } from "react-i18next";
+import { I18nManager } from "react-native";
 
+const ContactUs = () => {
+  const { t, i18n } = useTranslation();
+  const isRTL = ["ur", "ar"].includes(i18n.language);
+  I18nManager.forceRTL(isRTL);
+
+  const textStyle: any = {
+    fontSize: 16,
+    color: "white",
+    marginBottom: 15,
+    lineHeight: 24,
+    textAlign: isRTL ? "right" : "left",
+    writingDirection: isRTL ? "rtl" : "ltr",
+  };
+
+  return (
+    <View style={[styles.container, isRTL && styles.rtlContainer]}>
+      <Text style={[styles.title, isRTL && styles.rtlText]}>
+        {t("contact.title")}
+      </Text>
+
+      <Text style={textStyle}>{t("contact.name")}</Text>
+
+      <Text style={textStyle}>{t("contact.email")}</Text>
+
+      <Text style={textStyle}>{t("contact.phone")}</Text>
+
+      <Text style={textStyle}>{t("contact.address")}</Text>
+
+      <Text style={textStyle}>{t("contact.social")}</Text>
+
+      <Text style={textStyle}>{t("contact.version")}</Text>
+
+      <Text style={[styles.copyright, isRTL && styles.rtlText]}>
+        {t("contact.copyright")}
+      </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  text: { fontSize: 26, color: 'white', marginBottom: 15 }
+  container: {
+    flex: 1,
+    backgroundColor: "rgb(75,75,75)",
+    padding: 20,
+  },
+  rtlContainer: {
+    alignItems: "flex-end",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 20,
+    textAlign: "left",
+  },
+  copyright: {
+    fontSize: 16,
+    color: "white",
+    textAlign: "left",
+  },
+  rtlText: {
+    textAlign: "right",
+    writingDirection: "rtl",
+  },
 });
-export default ContactUs
+
+export default ContactUs;

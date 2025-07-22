@@ -1,0 +1,67 @@
+{
+  "contact": {
+    "title": "お問い合わせ",
+    "name": "名前: グルウィンダー・シン",
+    "email": "メール: gurwindersingh957@gmail.com",
+    "phone": "電話番号: 8437038748",
+    "address": "住所: インド パンジャブ州 グルダースプル カレル・カラン",
+    "social": "SNS: フェイスブック, インスタグラム, ツイッター",
+    "version": "バージョン: 1.0.0",
+    "copyright": "© 2025 請求書支払いアプリ。全著作権所有。"
+  },
+  "about": {
+    "title": "計算機アプリについて",
+    "description": "これはReact NativeとExpoで作られたシンプルでありながら強力な請求書支払いアプリケーションです。",
+    "features_title": "特徴:",
+    "feature1": "基本的な算術操作",
+    "feature2": "履歴追跡",
+    "feature3": "クリーンで直感的なインターフェース",
+    "version": "バージョン: 1.0.0",
+    "copyright": "© 2025 請求書支払いアプリ。全著作権所有。"
+    },
+    "settings": {
+    "language": "言語"
+    },
+  "drawer": {
+    "calculator": "計算機",
+    "category": "カテゴリー",
+    "cashManagement": "現金管理",
+    "about": "アプリについて",
+    "customers": "顧客",
+    "contactUs": "お問い合わせ",
+    "settings": "設定"
+  },
+  "customer": {
+    "notFound": "顧客が見つかりません",
+    "addCustomertoast": "新しい顧客を追加",
+    "addCustomer": "新しい顧客を追加",
+    "editCustomer": "顧客を編集",
+    "deleteCustomer": "顧客を削除",
+    "confirmDelete": "この顧客を削除してもよろしいですか？",
+    "deleteSuccess": "顧客が正常に削除されました",
+    "deleteError": "顧客の削除中にエラーが発生しました",
+    "saveSuccess": "顧客が正常に保存されました",
+    "saveError": "顧客の保存中にエラーが発生しました",
+    "name": "名前",
+    "phone": "電話番号"
+
+  },
+  "category": {
+    "notFound": "カテゴリーが見つかりません",
+    "addCategoryToast": "新しいカテゴリーを追加",
+    "addCategory": "新しいカテゴリーを追加",
+    "editCategory": "カテゴリーを編集",
+    "deleteCategory": "カテゴリーを削除",
+    "confirmDelete": "このカテゴリーを削除してもよろしいですか？",
+    "deleteSuccess": "カテゴリーが正常に削除されました",
+    "deleteError": "カテゴリーの削除中にエラーが発生しました",
+    "saveSuccess": "カテゴリーが正常に保存されました",
+    "saveError": "カテゴリーの保存中にエラーが発生しました",
+    "name": "カテゴリー名"
+  },
+  "save": "保存",
+  "cancel": "キャンセル",
+  "delete": "削除",
+  "edit": "編集",
+  "add": "追加"
+}

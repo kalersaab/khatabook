@@ -76,6 +76,14 @@
     "type": "Type (Debit/Credit)",
     "date": "Date"
   },
+  "navigation": {
+    "tabs": "Categories & Products",
+    "settings": "Settings"
+  },
+  "tabs": {
+    "categories": "Categories",
+    "products": "Products"
+  },
   "save":"Save",
   "cancel":"Cancel",
   "delete":"Delete",

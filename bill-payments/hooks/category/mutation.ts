@@ -1,9 +1,9 @@
 import categoryService from "@/services/category";
 import { useMutation } from "@tanstack/react-query";
-const { createCreate, updateCategory, deleteCategory } = new categoryService();
+const { createCategory, updateCategory, deleteCategory } = new categoryService();
 export function usecreateCategory() {
   return useMutation({
-    mutationFn: (payload) => createCreate(payload),
+    mutationFn: (payload) => createCategory(payload),
   });
 }
 export function useUpdateCategory() {

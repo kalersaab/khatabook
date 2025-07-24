@@ -7,7 +7,7 @@ import useTranslation from "@/hooks/useTranslation";
 const DrawerLayout = () => {
   const { t }:any = useTranslation();
   // Common drawer screen options
-  const commonOptions = {
+  const commonOptions :any= {
     headerShown: true,
     headerTintColor: "rgb(189, 189, 189)",
     headerStyle: {
@@ -43,14 +43,15 @@ const DrawerLayout = () => {
         }}
       />
       
-      <Drawer.Screen
-        name="category/index"
+           <Drawer.Screen
+        name="(tabs)" 
         options={{
-          ...commonOptions,
-          title: t('drawer.category'),
-          drawerLabel: t('drawer.category'),
+           ...commonOptions,
+          swipeEdgeWidth: 50,
+          drawerLabel: t('navigation.tabs'),
+          title: t('navigation.tabs'),
           drawerIcon: ({ color, size }) => (
-            <Text style={{ color, fontSize: size }}>📁</Text>
+            <Text style={{ color, fontSize: size }}>📊</Text>
           ),
         }}
       />

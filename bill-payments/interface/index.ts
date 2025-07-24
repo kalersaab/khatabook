@@ -17,3 +17,9 @@ export interface UriEndPoint {
   headerProps?: AxiosRequestHeaders;
   host?: string;
 }
+export interface customer {
+  body: {
+  name: string;
+  mobile: string;
+  };
+}

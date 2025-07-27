@@ -75,6 +75,40 @@
     "debit": "Débito",
     "credit": "Crédito"
   },
+  "products": {
+    "notFound": "No se encontraron productos",
+    "addProductToast": "Agregar nuevo producto",
+    "addProduct": "Agregar nuevo producto",
+    "editProduct": "Editar producto",
+    "deleteProduct": "Eliminar producto",
+    "confirmDelete": "¿Está seguro de que desea eliminar este producto?",
+    "deleteSuccess": "Producto eliminado con éxito",
+    "deleteError": "Error al eliminar el producto",
+    "saveSuccess": "Producto guardado con éxito",
+    "saveError": "Error al guardar el producto",
+    "name": "Nombre del producto",
+    "nameHint": "Ingrese el nombre del producto",
+    "priceHint": "Ingrese el precio del producto",
+    "editProductToast": "Producto editado con éxito",
+    "updateError": "Error al actualizar el producto",
+    "validation": {
+      "productName": "El nombre del producto es obligatorio",
+      "price": "El precio es obligatorio",
+      "category": "La categoría es obligatoria"
+    },
+    "price": "Precio",
+    "category": "Categoría"
+  },
+ "navigation": {
+    "tabs":"Producto/Categoría",
+    "settings": "Configuración"
+ },
+ "tabs": {
+    "products": "Productos",
+    "categories": "Categorías",
+    "cashManagement": "Gestión de efectivo",
+    "customers": "Clientes"
+  },
   "save": "Guardar",
   "cancel": "Cancelar",
   "delete": "Eliminar",

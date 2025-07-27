@@ -59,6 +59,57 @@
     "saveError": "カテゴリーの保存中にエラーが発生しました",
     "name": "カテゴリー名"
   },
+  "cash": {
+    "title": "現金管理",
+    "notFound": "取引が見つかりません",
+    "credit": "クレジット",
+    "debit": "デビット",
+    "addCashToast": "新しい現金記録を追加",
+    "addCash": "新しい現金記録を追加",
+    "editCash": "現金記録を編集",
+    "deleteCash": "現金記録を削除",
+    "confirmDelete": "この記録を削除してもよろしいですか？",
+    "deleteSuccess": "記録が正常に削除されました",
+    "deleteError": "記録の削除中にエラーが発生しました",
+    "saveSuccess": "記録が正常に保存されました",
+    "saveError": "記録の保存中にエラーが発生しました",
+    "amount": "金額",
+    "type": "タイプ",
+    "Debit": "デビット",
+    "Credit": "クレジット", 
+    "date": "日付"
+  },
+  "products": {
+  "notFound": "商品が見つかりません",
+  "addProductToast": "新しい商品を追加",
+  "addProduct": "新規商品登録",
+  "editProduct": "商品編集",
+  "deleteProduct": "商品削除",
+  "confirmDelete": "本当にこの商品を削除しますか？",
+  "deleteSuccess": "商品を削除しました",
+  "deleteError": "商品削除中にエラーが発生しました",
+  "saveSuccess": "商品を保存しました",
+  "saveError": "商品保存中にエラーが発生しました",
+  "editProductToast": "商品情報を更新しました",
+  "updateError": "商品更新中にエラーが発生しました",
+  "name": "商品名",
+  "nameHint": "商品名を入力してください",
+  "priceHint": "価格を入力してください",
+  "price": "価格",
+  "validation": {
+    "productName": "商品名は必須です",
+    "price": "価格は必須項目で、正の数値を入力してください",
+    "category": "カテゴリ選択は必須です"
+  }
+},
+"navigation": {
+    "tabs": "カテゴリーと製品",
+    "settings": "設定"
+  },
+  "tabs": {
+    "categories": "カテゴリー",
+    "products": "製品"
+  },
   "save": "保存",
   "cancel": "キャンセル",
   "delete": "削除",

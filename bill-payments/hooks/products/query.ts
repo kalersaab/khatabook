@@ -1,12 +1,16 @@
-import customerService from "@/services/customer";
-import { useInfiniteQuery } from "@tanstack/react-query";
-
-const { getCustomers } = new customerService();
-export const useGetCustomer = (query: any) => {
+import productService from "@/services/products";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
+interface ProductQueryParams {
+  page?: number;
+  limit?: number;
+  query?: string;
+}
+const { getProducts } = new productService();
+export const useGetProduct = (query: any) => {
   return useInfiniteQuery({
-    queryKey: ["getCustomer", query],
+    queryKey: ["getProducts", query],
     queryFn: ({ pageParam = 0 }) =>
-      getCustomers({ ...query, page: pageParam * 10, limit: 10 }),
+      getProducts({ ...query, page: pageParam * 10, limit: 10 }),
     getNextPageParam: (lastPage: any, pages: any[]) => {
       const totalItems = lastPage?.data?.count;
       const loadedItems =
@@ -19,8 +23,6 @@ export const useGetCustomer = (query: any) => {
     initialPageParam: 0,
     refetchOnWindowFocus: false,
     refetchOnMount: true,
-    staleTime: 5 * 60 * 1000,
-    retry: 2,
-    retryDelay: 1000,
+    retry:2
   });
 };

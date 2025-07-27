@@ -11,6 +11,8 @@ import {
   Image,
   FlatList,
   ActivityIndicator,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import FloatingActionButton from "@/components/float";
@@ -18,7 +20,6 @@ import useTranslation from "@/hooks/useTranslation";
 import { usecreateCustomer, useDeleteCustomer, useUpdateCustomer } from "@/hooks/customer/mutation";
 import { useGetCustomer } from "@/hooks/customer/query";
 import { useFormik } from "formik";
-import { customer } from "@/interface";
 
 const { height, width } = Dimensions.get("window");
 
@@ -90,7 +91,7 @@ const handleDelete = async (id: string) => {
     ToastAndroid.show(t('customer.deleteError'), ToastAndroid.SHORT);
   }
 };
- const renderCategoryItem = ({ item }: { item: any }) => (
+ const renderCustomer = ({ item }: { item: any }) => (
   <View style={styles.tableRow}>
     {/* Name Column */}
     <View style={[styles.tableCell, styles.nameCell]}>
@@ -122,7 +123,7 @@ const handleDelete = async (id: string) => {
       </TouchableOpacity>
     </View>
   </View>
-);
+)
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
@@ -133,6 +134,7 @@ const handleDelete = async (id: string) => {
       <Text style={styles.emptyText}>{t('customer.notFound')}</Text>
     </View>
   );
+
 const TableHeader = () => {
   return customers.length ? (
     <View style={[styles.tableRow, styles.headerRow]}>
@@ -146,7 +148,7 @@ const TableHeader = () => {
     <View style={styles.mainContainer}>
       <FlatList
         data={customers}
-        renderItem={renderCategoryItem}
+        renderItem={renderCustomer}
         ListHeaderComponent={TableHeader}
         keyExtractor={(item) => item._id}
         contentContainerStyle={customers.length === 0 &&  styles.emptyListContent}
@@ -164,6 +166,7 @@ const TableHeader = () => {
         visible={modalVisible}
         onRequestClose={closeModal}
       >
+         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>
@@ -210,6 +213,7 @@ const TableHeader = () => {
             </View>
           </View>
         </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );

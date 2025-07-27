@@ -46,6 +46,71 @@
     "name": "Client Nom",
     "phone": "Téléphone Numéro"
   },
+ "cash": {
+  "title": "Caisse",
+  "notFound": "Aucune transaction trouvée",
+  "credit": "Crédit",
+  "debit": "Débit",
+  "addCashToast": "Ajouter un nouvel enregistrement de caisse",
+  "addCash": "Ajouter un nouvel enregistrement",
+  "editCash": "Modifier l'enregistrement",
+  "deleteCash": "Supprimer l'enregistrement",
+  "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet enregistrement ?",
+  "deleteSuccess": "Enregistrement supprimé avec succès",
+  "deleteError": "Erreur lors de la suppression",
+  "saveSuccess": "Enregistrement sauvegardé avec succès",
+  "saveError": "Erreur lors de la sauvegarde",
+  "amount": "Montant",
+  "type": "Type",
+  "Debit": "Débit",
+  "Credit": "Crédit",
+  "date": "Date"
+},
+  "category": {
+    "notFound": "Aucune catégorie trouvée",
+    "addCategoryToast": "Ajouter une nouvelle catégorie",
+    "addCategory": "Ajouter une nouvelle catégorie",
+    "editCategory": "Modifier la catégorie",
+    "deleteCategory": "Supprimer la catégorie",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
+    "deleteSuccess": "Catégorie supprimée avec succès",
+    "deleteError": "Erreur lors de la suppression de la catégorie",
+    "saveSuccess": "Catégorie enregistrée avec succès",
+    "saveError": "Erreur lors de l'enregistrement de la catégorie",
+    "name": "Nom de la catégorie"
+  },
+  "products": {
+    "notFound": "Aucun produit trouvé",
+    "addProductToast": "Ajouter un nouveau produit",
+    "addProduct": "Ajouter un nouveau produit",
+    "editProduct": "Modifier le produit",
+    "deleteProduct": "Supprimer le produit",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce produit ?",
+    "deleteSuccess": "Produit supprimé avec succès",
+    "deleteError": "Erreur lors de la suppression du produit",
+    "saveSuccess": "Produit enregistré avec succès",
+    "saveError": "Erreur lors de l'enregistrement du produit",
+    "name": "Nom du produit",
+    "nameHint": "Entrez le nom du produit",
+    "priceHint": "Entrez le prix du produit",
+    "editProductToast": "Modifier le produit",
+    "updateError": "Erreur lors de la mise à jour du produit",
+    "price": "Prix",
+    "category": "Catégorie",
+    "validation": {
+      "productName": "Le nom du produit est requis",
+      "price": "Le prix est requis",
+      "category": "La catégorie est requise"
+    }
+  },
+  "navigation": {
+    "tabs": "Catégories et Produits",
+    "settings": "Paramètres"
+  },
+  "tabs": {
+    "categories": "Catégories",
+    "products": "Produits"
+  },
   "save": "Enregistrer",
   "cancel": "Annuler",
   "delete": "Supprimer",

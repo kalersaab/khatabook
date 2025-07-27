@@ -67,7 +67,28 @@ const DrawerLayout = () => {
           ),
         }}
       />
-      
+        <Drawer.Screen
+        name="customer/index"
+        options={{
+          ...commonOptions,
+          title: t('drawer.customers'),
+          drawerLabel: t('drawer.customers'),
+          drawerIcon: ({ color, size }) => (
+            <Text style={{ color, fontSize: size }}>👥</Text>
+          ),
+        }}
+      />
+        <Drawer.Screen
+        name="bluetoothprint/index"
+        options={{
+          ...commonOptions,
+          title: t('drawer.bluetooth'),
+          drawerLabel: t('drawer.bluetooth'),
+          drawerIcon: ({ color, size }) => (
+            <Text style={{ color, fontSize: size }}>🖨️</Text>
+          ),
+        }}
+      />
       <Drawer.Screen
         name="about/index"
         options={{
@@ -76,18 +97,6 @@ const DrawerLayout = () => {
           drawerLabel: t('drawer.about'),
           drawerIcon: ({ color, size }) => (
             <Text style={{ color, fontSize: size }}>📄</Text>
-          ),
-        }}
-      />
-      
-      <Drawer.Screen
-        name="customer/index"
-        options={{
-          ...commonOptions,
-          title: t('drawer.customers'),
-          drawerLabel: t('drawer.customers'),
-          drawerIcon: ({ color, size }) => (
-            <Text style={{ color, fontSize: size }}>👥</Text>
           ),
         }}
       />

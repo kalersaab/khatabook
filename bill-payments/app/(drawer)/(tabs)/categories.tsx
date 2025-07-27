@@ -11,6 +11,8 @@ import {
   Image,
   FlatList,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import FloatingActionButton from "@/components/float";
@@ -21,7 +23,8 @@ import {
 } from "@/hooks/category/mutation";
 import { useGetCategory } from "@/hooks/category/query";
 import useTranslation from "@/hooks/useTranslation";
-
+import { useAtom } from "jotai";
+import { cat } from "@/store";
 type Category = {
   _id: string;
   name: string;
@@ -39,13 +42,26 @@ const CategoryItem = () => {
   const createCategory: any = usecreateCategory();
   const deleteCategory: any = useDeleteCategory();
   const editCategory: any = useUpdateCategory();
-  const { data, refetch } = useGetCategory({});
-  const categories =
-    data?.pages?.reduce(
-      (acc: any, obj: any) => acc.concat(obj?.data.data),
-      []
-    ) || [];
+  const [categories, setCategories] = useAtom(cat);
+  const { data, refetch, isFetching, error } = useGetCategory({});
 
+  React.useEffect(() => {
+    if (data?.pages) {
+      const categories =
+        data?.pages?.reduce(
+          (acc: any, obj: any) => acc.concat(obj?.data.data),
+          []
+        ) || [];
+      setCategories(categories);
+    }
+  }, [data, setCategories]);
+  if (isFetching && categories.length === 0) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <Text>Error loading categories</Text>;
+  }
   const openModalForAdd = () => {
     setCurrentCategory(null);
     setCategoryName("");
@@ -76,7 +92,13 @@ const CategoryItem = () => {
           body: { name: categoryName },
         })
         .then(() => {
-          refetch();
+          setCategories((prev) =>
+            prev.map((cat) =>
+              cat._id === currentCategory?._id
+                ? { ...cat, name: categoryName }
+                : cat
+            )
+          );
           setCategoryName("");
           ToastAndroid.show(t("category.saveSuccess"), ToastAndroid.SHORT);
           setIsLoading(false);
@@ -88,8 +110,8 @@ const CategoryItem = () => {
     } else {
       createCategory
         .mutateAsync({ body: { name: categoryName } })
-        .then(() => {
-          refetch();
+        .then((res:any) => {
+          setCategories((prev)=>[...prev, res.data])
           setCategoryName("");
           ToastAndroid.show(
             ` ${
@@ -116,7 +138,9 @@ const CategoryItem = () => {
         .mutateAsync({ categoryId })
         .then(() => {
           ToastAndroid.show(t("category.deleteSuccess"), ToastAndroid.SHORT);
-          refetch();
+          setCategories((prev) =>
+            prev.filter((cat) => cat._id !== categoryId)
+          );
         })
         .catch((err: any) => {
           console.log("err", err);
@@ -163,7 +187,6 @@ const CategoryItem = () => {
       <Text style={styles.emptyText}>{t("category.notFound")}</Text>
     </View>
   );
-
   return (
     <View style={styles.mainContainer}>
       <FlatList
@@ -185,10 +208,12 @@ const CategoryItem = () => {
 
       <Modal
         animationType="slide"
+        
         transparent={true}
         visible={modalVisible}
         onRequestClose={closeModal}
       >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>
@@ -228,6 +253,7 @@ const CategoryItem = () => {
             </View>
           </View>
         </View>
+    </TouchableWithoutFeedback>
       </Modal>
     </View>
   );

@@ -29,7 +29,8 @@
     "about": "About",
     "customers": "Customers",
     "contactUs": "Contact Us",
-    "settings": "Settings"
+    "settings": "Settings",
+    "bluetooth":"Bluetooth Printer"
   },
   "customer":{
     "notFound":"No customer found",
@@ -73,8 +74,33 @@
     "saveSuccess": "Cash record saved successfully",
     "saveError": "Error saving cash record",
     "amount": "Amount",
-    "type": "Type (Debit/Credit)",
+    "type": "Type",
+    "Debit": "Debit",
+    "Credit": "Credit",
     "date": "Date"
+  },
+  "products": {
+    "notFound": "No products found",
+    "addProductToast": "Add new product",
+    "addProduct": "Add New Product",
+    "editProduct": "Edit Product",
+    "deleteProduct": "Delete Product",
+    "confirmDelete": "Are you sure you want to delete this product?",
+    "deleteSuccess": "Product deleted successfully",
+    "deleteError": "Error deleting product",
+    "saveSuccess": "Product saved successfully",
+    "saveError": "Error saving product",
+    "editProductToast": "Edit product successfully",
+    "updateError": "Error updating product",
+    "name": "Product Name",
+    "nameHint": "Enter product name",
+    "priceHint": "Enter product price",
+    "price": "Price",
+    "validation": {
+      "productName": "Product name is required",
+      "price": "Price is required and must be a positive number",
+      "category": "Category is required"
+    }
   },
   "navigation": {
     "tabs": "Categories & Products",

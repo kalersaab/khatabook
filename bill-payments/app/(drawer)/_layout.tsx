@@ -124,6 +124,18 @@ const DrawerLayout = () => {
           ),
         }}
       />
+      <Drawer.Screen
+  name="logout"
+  options={{
+    ...commonOptions, 
+    drawerLabel: t("drawer.logout"),
+    title: t("drawer.logout"),
+    drawerIcon: ({ color, size }) => (
+      <Text style={{ color, fontSize: size }}>🚪</Text>
+    ),
+  }}
+/>
+
     </Drawer>
   );
 };

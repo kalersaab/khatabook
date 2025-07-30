@@ -43,67 +43,73 @@ const BluetoothPrint = () => {
     };
   }, []);
 
-  const enableBluetooth = async () => {
-    try {
-      await BleManager.enableBluetooth();
-    } catch (error) {
-      console.error('Enable Bluetooth error:', error);
-      if (Platform.OS === 'ios') {
-        Alert.alert(
-          'Enable Bluetooth',
-          'Please enable Bluetooth in Settings to continue',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Open Settings', onPress: () => Linking.openURL('App-Prefs:Bluetooth') },
-          ]
-        );
-      }
+  const enableBluetooth = async (): Promise<boolean> => {
+  try {
+    await BleManager.enableBluetooth();
+    return true;
+  } catch (error) {
+    console.error('Enable Bluetooth error:', error);
+
+    if (Platform.OS === 'ios') {
+      Alert.alert(
+        'Enable Bluetooth',
+        'Please enable Bluetooth in Settings to continue',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Open Settings', onPress: () => Linking.openURL('App-Prefs:Bluetooth') },
+        ]
+      );
+    } else {
+      Alert.alert('Bluetooth Required', 'Please enable Bluetooth to scan devices.');
     }
-  };
 
-  const startScanning = async () => {
-    if (isScanning) return;
+    return false;
+  }
+};
 
-    try {
-      await enableBluetooth();
-      
-      if (!hasPermissions) {
-        const granted: any = await handleAndroidPermissions();
-        if (!granted) return;
-        setHasPermissions(true);
-      }
+const startScanning = async () => {
+  if (isScanning) return;
 
-      setIsScanning(true);
-      setDevices(new Map()); // Clear previous devices
-      
-      await BleManager.scan([], 5, true);
-      console.log('Scanning started');
+  const bluetoothEnabled = await enableBluetooth();
+  if (!bluetoothEnabled) return;
 
-      // Modified device discovery handler to prevent duplicates
-      BleManager.onDiscoverPeripheral((peripheral: Peripheral) => {
-        setDevices(prevDevices => {
-          const newDevices = new Map(prevDevices);
-          if (!newDevices.has(peripheral.id)) {
-            newDevices.set(peripheral.id, {
-              id: peripheral.id,
-              name: peripheral.name || 'Unknown Device',
-              rssi: peripheral.rssi,
-            });
-          }
-          return newDevices;
-        });
+  try {
+    if (!hasPermissions) {
+      const granted: any = await handleAndroidPermissions();
+      if (!granted) return;
+      setHasPermissions(true);
+    }
+
+    setIsScanning(true);
+    setDevices(new Map());
+
+    await BleManager.scan([], 5, true);
+    console.log('Scanning started');
+
+    BleManager.onDiscoverPeripheral((peripheral: Peripheral) => {
+      setDevices(prevDevices => {
+        const newDevices = new Map(prevDevices);
+        if (!newDevices.has(peripheral.id)) {
+          newDevices.set(peripheral.id, {
+            id: peripheral.id,
+            name: peripheral.name || 'Unknown Device',
+            rssi: peripheral.rssi,
+          });
+        }
+        return newDevices;
       });
+    });
 
-      setTimeout(() => {
-        BleManager.stopScan().then(() => {
-          setIsScanning(false);
-        });
-      }, 5000);
-    } catch (error) {
-      console.error('Scanning error:', error);
-      setIsScanning(false);
-    }
-  };
+    setTimeout(() => {
+      BleManager.stopScan().then(() => {
+        setIsScanning(false);
+      });
+    }, 5000);
+  } catch (error) {
+    console.error('Scanning error:', error);
+    setIsScanning(false);
+  }
+};
 
   const connectToDevice = async (device: BluetoothDevice) => {
 

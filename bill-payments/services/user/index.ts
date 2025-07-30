@@ -1,18 +1,22 @@
-import { callApi } from '@/utils/apiUtils';
-import { user } from '@/utils/endpoint/user';
+import { callApi } from "@/utils/apiUtils";
+import { user } from "@/utils/endpoint/user";
 class UserService {
-    public addUser = async({body}:any)=>
-        callApi({
-            uriEndPoint:user.addUser.v1,body
-        })
-    
-    public loginUser = async ({body}:any)=>
-         callApi({
-            uriEndPoint:user.loginUser.v1,body
-        })
-    public signup = async ({body}:any)=>
-         callApi({
-            uriEndPoint:user.signup.v1,body
-        })
+  public addUser = async ({ body }: any) =>
+    callApi({
+      uriEndPoint: user.addUser.v1,
+      body,
+    });
+
+  public loginUser = async ({ body }: any) =>
+    callApi({
+      uriEndPoint: user.loginUser.v1,
+      body,
+    });
+  public signup = async ({ body }: any) =>
+    callApi({
+      uriEndPoint: user.signup.v1,
+      body,
+    });
+  public meApi = async () => callApi({ uriEndPoint: user.meApi.v1 });
 }
-export default UserService
+export default UserService;

@@ -30,7 +30,8 @@
     "customers": "Customers",
     "contactUs": "Contact Us",
     "settings": "Settings",
-    "bluetooth":"Bluetooth Printer"
+    "bluetooth":"Bluetooth Printer",
+    "logout":"Logout"
   },
   "customer":{
     "notFound":"No customer found",
@@ -114,5 +115,12 @@
   "cancel":"Cancel",
   "delete":"Delete",
   "edit":"Edit",
-  "add":"Add"
+  "add":"Add",
+  "email":"email",
+  "password":"Password",
+  "signup":"SignUp",
+  "signin":"Login",
+  "newAcc":"New to Bill payments?",
+  "acc":"Create an account",
+  "bill":"Sign in to Bill payment"
 }

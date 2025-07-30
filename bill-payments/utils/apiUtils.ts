@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Axios from "axios";
+import { router } from "expo-router";
 import { Alert, ToastAndroid } from "react-native";
 
 export const hostname = () => {
@@ -131,7 +132,8 @@ export const callApi = ({
                     Alert.alert("Bad Request", err?.response?.data?.message);
                 }
                  else if (err?.response?.status === 403) {
-Alert.alert("Session Expired", "Your session has expired. Please login again.");
+                    router.replace('/login')
+ ToastAndroid.show("Session Expired, Login again",  ToastAndroid.SHORT);
                 }
                 if (err?.response?.status === 404) {
                     ToastAndroid.show("No data found", ToastAndroid.SHORT);

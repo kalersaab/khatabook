@@ -30,7 +30,8 @@
     "about": "À propos",
     "customers": "Clients",
     "contactUs": "Contactez-nous",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "bluetooth": "Imprimante Bluetooth"
   },
   "customer": {
     "notFound": "Aucun client trouvé",

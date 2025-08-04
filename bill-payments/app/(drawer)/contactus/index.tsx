@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Linking,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { useTranslation } from "react-i18next";
 import { I18nManager } from "react-native";
 
@@ -15,25 +22,38 @@ const ContactUs = () => {
     textAlign: isRTL ? "right" : "left",
     writingDirection: isRTL ? "rtl" : "ltr",
   };
+    const phoneNumber = "918437038748";
+  const message = "Hello, I’m reaching out from the app.";
+  const encodedMessage = encodeURIComponent(message);
+   const openWhatsApp = async () => {
 
+    const appUrl = `whatsapp://send?phone=${phoneNumber}&text=${encodedMessage}`;
+    const webUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
+
+    try {
+      const canOpen = await Linking.canOpenURL(appUrl);
+      if (canOpen) {
+        await Linking.openURL(appUrl);
+      } else {
+        await Linking.openURL(webUrl);
+      }
+    } catch (err) {
+      console.error("Error opening WhatsApp", err);
+    }
+  };
   return (
     <View style={[styles.container, isRTL && styles.rtlContainer]}>
       <Text style={[styles.title, isRTL && styles.rtlText]}>
         {t("contact.title")}
       </Text>
-
       <Text style={textStyle}>{t("contact.name")}</Text>
-
       <Text style={textStyle}>{t("contact.email")}</Text>
-
-      <Text style={textStyle}>{t("contact.phone")}</Text>
-
+      <TouchableOpacity onPress={openWhatsApp}>
+        <Text style={textStyle}>{t("contact.phone")}</Text>
+      </TouchableOpacity>
       <Text style={textStyle}>{t("contact.address")}</Text>
-
       <Text style={textStyle}>{t("contact.social")}</Text>
-
       <Text style={textStyle}>{t("contact.version")}</Text>
-
       <Text style={[styles.copyright, isRTL && styles.rtlText]}>
         {t("contact.copyright")}
       </Text>

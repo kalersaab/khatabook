@@ -53,6 +53,7 @@ const Login = () => {
         value={formik.values.email}
         onChangeText={formik.handleChange("email")}
         autoCapitalize="none"
+        keyboardType={"email-address"}
         placeholderTextColor="#aaa"
       />
       <TextInput

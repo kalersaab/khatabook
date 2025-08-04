@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import { useTranslation } from "react-i18next";
 
 const LanguageScreen = () => {
@@ -18,54 +19,55 @@ const LanguageScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{t("settings.language")}</Text>
-
-      {languages.map((lang) => (
-        <TouchableOpacity
-          key={lang.code}
-          style={[
-            styles.languageButton,
-            i18n.language === lang.code && styles.selectedLanguage,
-          ]}
-          onPress={() => i18n.changeLanguage(lang.code)}
+      <View style={styles.pickerWrapper}>
+        <Picker
+          selectedValue={i18n.language}
+          onValueChange={(value) => {
+            if (typeof value === "string") {
+              i18n.changeLanguage(value);
+            }
+          }}
+          mode="dropdown"
+          style={styles.picker}
+          dropdownIconColor="#444"
+          accessibilityLabel={'language'}
         >
-          <Text style={styles.languageText}>{lang.name}</Text>
-          {i18n.language === lang.code && (
-            <Text style={styles.selectedIcon}>✓</Text>
-          )}
-        </TouchableOpacity>
-      ))}
+          {languages.map((lang) => (
+            <Picker.Item
+              key={lang.code}
+              label={lang.name}
+              value={lang.code}
+            />
+          ))}
+        </Picker>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    padding: 16,
     flex: 1,
-    padding: 20,
-    backgroundColor: "white",
+    backgroundColor: "rgb(75,75,75)",
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 12,
+    color:"rgb(238, 238, 238)",
+    fontWeight: "600",
   },
-  languageButton: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    color:"rgb(238, 238, 238)",
+    overflow: "hidden",
   },
-  selectedLanguage: {
-    backgroundColor: "#f5f5f5",
-  },
-  languageText: {
-    fontSize: 16,
-  },
-  selectedIcon: {
-    color: "green",
-    fontWeight: "bold",
+  picker: {
+    height: 50,
+    width: "100%",
+    color:"rgb(238, 238, 238)",
   },
 });
 
